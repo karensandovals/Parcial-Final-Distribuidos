@@ -28,9 +28,9 @@ public class GenerarPazYSalvoImpl implements GenerarPazYSalvoInt {
         private static final String URL_FIN = "http://localhost:xxxx/api/xxxx";
         private static final String URL_DEP = "http://localhost:xxxx/api/xxxx";
 
-        private static final String TOPIC_LAB = "/topic/admin/laboratorio";
-        private static final String TOPIC_FIN = "/topic/admin/financiera";
-        private static final String TOPIC_DEP = "/topic/admin/deportes";
+        private static final String TOPIC_LAB = "/notificacion/admin/laboratorio";
+        private static final String TOPIC_FIN = "/notificacion/admin/financiera";
+        private static final String TOPIC_DEP = "/notificacion/admin/deportes";
 
         @Override
         public RespuestaPazYSalvoDTO verificarPazYSalvo(PeticionPazYSalvoDTO objPeticion) {
