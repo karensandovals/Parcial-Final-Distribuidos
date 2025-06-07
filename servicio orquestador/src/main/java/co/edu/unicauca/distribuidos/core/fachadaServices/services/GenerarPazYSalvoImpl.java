@@ -24,9 +24,9 @@ public class GenerarPazYSalvoImpl implements GenerarPazYSalvoInt {
         @Autowired
         private SimpMessagingTemplate messagingTemplate;
 
-        private static final String URL_LAB = "http://localhost:xxxx/api/xxxx";
-        private static final String URL_FIN = "http://localhost:xxxx/api/xxxx";
-        private static final String URL_DEP = "http://localhost:xxxx/api/xxxx";
+        private static final String URL_LAB = "http://localhost:5001/api/laboratorio";
+        private static final String URL_FIN = "http://localhost:5002/api/deudas";
+        private static final String URL_DEP = "http://localhost:5003/api/deportes";
 
         private static final String TOPIC_LAB = "/notificacion/admin/laboratorio";
         private static final String TOPIC_FIN = "/notificacion/admin/financiera";
