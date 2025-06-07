@@ -28,9 +28,9 @@ public class GenerarPazYSalvoImpl implements GenerarPazYSalvoInt {
         private static final String URL_FIN = "http://localhost:5002/api/deudas";
         private static final String URL_DEP = "http://localhost:5003/api/deportes";
 
-        private static final String TOPIC_LAB = "/notificacion/admin/laboratorio";
-        private static final String TOPIC_FIN = "/notificacion/admin/financiera";
-        private static final String TOPIC_DEP = "/notificacion/admin/deportes";
+        private static final String NOTIFICACION_LAB = "/notificacion/admin/laboratorio";
+        private static final String NOTIFICACION_FIN = "/notificacion/admin/financiera";
+        private static final String NOTIFICACION_DEP = "/notificacion/admin/deportes";
 
         @Override
         public RespuestaPazYSalvoDTO verificarPazYSalvo(PeticionPazYSalvoDTO objPeticion) {
@@ -38,9 +38,9 @@ public class GenerarPazYSalvoImpl implements GenerarPazYSalvoInt {
                 String notiInicio = String.format(
                                 "El estudiante con código %s y nombres %s ha realizado una nueva solicitud de paz y salvo",
                                 objPeticion.getCodigoEstudiante(), objPeticion.getNombresEstudiante());
-                messagingTemplate.convertAndSend(TOPIC_LAB, notiInicio);
-                messagingTemplate.convertAndSend(TOPIC_FIN, notiInicio);
-                messagingTemplate.convertAndSend(TOPIC_DEP, notiInicio);
+                messagingTemplate.convertAndSend(NOTIFICACION_LAB, notiInicio);
+                messagingTemplate.convertAndSend(NOTIFICACION_FIN, notiInicio);
+                messagingTemplate.convertAndSend(NOTIFICACION_DEP, notiInicio);
 
                 RespuestaPazYSalvoDTO objRespuestaPazYSalvo = new RespuestaPazYSalvoDTO();
 
@@ -91,9 +91,9 @@ public class GenerarPazYSalvoImpl implements GenerarPazYSalvoInt {
                         if (ok) {
                                 objRespuestaPazYSalvo.setMensaje("El estudiante se encuentra a paz y salvo");
                                 // 6. Notificar a los admins por área
-                                messagingTemplate.convertAndSend(TOPIC_LAB, objRespuestaPazYSalvo.getMensaje());
-                                messagingTemplate.convertAndSend(TOPIC_FIN, objRespuestaPazYSalvo.getMensaje());
-                                messagingTemplate.convertAndSend(TOPIC_DEP, objRespuestaPazYSalvo.getMensaje());
+                                messagingTemplate.convertAndSend(NOTIFICACION_LAB, objRespuestaPazYSalvo.getMensaje());
+                                messagingTemplate.convertAndSend(NOTIFICACION_FIN, objRespuestaPazYSalvo.getMensaje());
+                                messagingTemplate.convertAndSend(NOTIFICACION_DEP, objRespuestaPazYSalvo.getMensaje());
                         }
 
                 } catch (Exception e) {
@@ -109,9 +109,9 @@ public class GenerarPazYSalvoImpl implements GenerarPazYSalvoInt {
 
                         System.out.println(e.getMessage());
 
-                        messagingTemplate.convertAndSend(TOPIC_LAB, mensajeLab);
-                        messagingTemplate.convertAndSend(TOPIC_FIN, mensajeFin);
-                        messagingTemplate.convertAndSend(TOPIC_DEP, mensajeDep);
+                        messagingTemplate.convertAndSend(NOTIFICACION_LAB, mensajeLab);
+                        messagingTemplate.convertAndSend(NOTIFICACION_FIN, mensajeFin);
+                        messagingTemplate.convertAndSend(NOTIFICACION_DEP, mensajeDep);
                 }
 
                 return objRespuestaPazYSalvo;
@@ -124,9 +124,9 @@ public class GenerarPazYSalvoImpl implements GenerarPazYSalvoInt {
                                 "El estudiante con código %s y nombres %s ha realizado una nueva solicitud de paz y salvo",
                                 peticion.getCodigoEstudiante(), peticion.getNombresEstudiante());
 
-                messagingTemplate.convertAndSend(TOPIC_LAB, notiInicio);
-                messagingTemplate.convertAndSend(TOPIC_FIN, notiInicio);
-                messagingTemplate.convertAndSend(TOPIC_DEP, notiInicio);
+                messagingTemplate.convertAndSend(NOTIFICACION_LAB, notiInicio);
+                messagingTemplate.convertAndSend(NOTIFICACION_FIN, notiInicio);
+                messagingTemplate.convertAndSend(NOTIFICACION_DEP, notiInicio);
 
                 RespuestaPazYSalvoDTO objRespuestaPazYSalvo = new RespuestaPazYSalvoDTO();
 
@@ -181,11 +181,11 @@ public class GenerarPazYSalvoImpl implements GenerarPazYSalvoInt {
                                                 objRespuestaPazYSalvo
                                                                 .setMensaje("El estudiante se encuentra a paz y salvo");
                                                 // 6. Notificar a los admins por área
-                                                messagingTemplate.convertAndSend(TOPIC_LAB,
+                                                messagingTemplate.convertAndSend(NOTIFICACION_LAB,
                                                                 objRespuestaPazYSalvo.getMensaje());
-                                                messagingTemplate.convertAndSend(TOPIC_FIN,
+                                                messagingTemplate.convertAndSend(NOTIFICACION_FIN,
                                                                 objRespuestaPazYSalvo.getMensaje());
-                                                messagingTemplate.convertAndSend(TOPIC_DEP,
+                                                messagingTemplate.convertAndSend(NOTIFICACION_DEP,
                                                                 objRespuestaPazYSalvo.getMensaje());
                                         }
                                         return objRespuestaPazYSalvo;
@@ -203,9 +203,9 @@ public class GenerarPazYSalvoImpl implements GenerarPazYSalvoInt {
                                                         + consultarImplementosDeportivosNoRetornados(
                                                                         objRespuestaPazYSalvo);
 
-                                        messagingTemplate.convertAndSend(TOPIC_LAB, mensajeLab);
-                                        messagingTemplate.convertAndSend(TOPIC_FIN, mensajeFin);
-                                        messagingTemplate.convertAndSend(TOPIC_DEP, mensajeDep);
+                                        messagingTemplate.convertAndSend(NOTIFICACION_LAB, mensajeLab);
+                                        messagingTemplate.convertAndSend(NOTIFICACION_FIN, mensajeFin);
+                                        messagingTemplate.convertAndSend(NOTIFICACION_DEP, mensajeDep);
 
                                         return Mono.just(respuesta);
                                 });
