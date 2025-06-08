@@ -11,11 +11,14 @@ import co.edu.unicauca.distribuidos.core.modelos.Deuda;
 // Repositorio para manejar las deudas
 public class DeudaRepositorio {
    private Map<String, List<Deuda>> deudasPorEstudiante;
+   private Map<String, String> nombresPorCodigo; 
 
     public DeudaRepositorio() {
         this.deudasPorEstudiante = new HashMap<>();
+        this.nombresPorCodigo = new HashMap<>(); 
 
-        // 🔽 Deudas precargadas (simuladas en RAM)
+
+        //  Deudas precargadas (simuladas en RAM)
 
         List<Deuda> deudasJuan = new ArrayList<>();
         deudasJuan.add(new Deuda("202012345", 150000, "Mora en pago de matrícula", 
@@ -29,6 +32,10 @@ public class DeudaRepositorio {
 
         this.deudasPorEstudiante.put("202012345", deudasJuan);
         this.deudasPorEstudiante.put("202087654", deudasAna);
+
+        // 🔽 Nombres precargados
+        this.nombresPorCodigo.put("202012345", "Juan Pérez");
+        this.nombresPorCodigo.put("202087654", "Ana Gómez");
     }
 
     public List<Deuda> obtenerDeudasPorCodigo(String codigoEstudiante) {
