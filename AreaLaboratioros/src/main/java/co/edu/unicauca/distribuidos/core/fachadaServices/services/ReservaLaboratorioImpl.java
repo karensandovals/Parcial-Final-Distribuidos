@@ -1,14 +1,15 @@
 package co.edu.unicauca.distribuidos.core.fachadaServices.services;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import co.edu.unicauca.distribuidos.core.capaAccesoADatos.modelos.prestamoLaboratorio;
 import co.edu.unicauca.distribuidos.core.capaAccesoADatos.repositorio.PrestamoLaboratorioRepositorio;
 import co.edu.unicauca.distribuidos.core.fachadaServices.DTOPeticion.PeticionPrestamoDTO;
 import co.edu.unicauca.distribuidos.core.fachadaServices.DTORespueta.RespuestaPrestamoDTOLaboratorio;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ReservaLaboratorioImpl implements ReservaLaboratorioInt {
@@ -21,6 +22,7 @@ public class ReservaLaboratorioImpl implements ReservaLaboratorioInt {
         List<prestamoLaboratorio> prestamos = repositorio.buscarPrestamosPendientes(peticion.getCodigoEstudiante());
         return prestamos.stream()
                 .map(p -> new RespuestaPrestamoDTOLaboratorio(
+                        p.getNombreEstudiante(),
                         p.getEquipo(),
                         p.getEstado(),
                         p.getFechaPrestamo(),

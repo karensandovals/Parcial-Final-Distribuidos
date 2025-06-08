@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-ProyectoApiRestClienteApplication<co.edu.unicauca.distribuidos-proyecto_api_rest_cliente>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "co.edu.unicauca.distribuidos.core.ProyectoApiRestClienteApplication",
+            "projectName": "co.edu.unicauca.distribuidos-proyecto_api_rest_cliente",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
