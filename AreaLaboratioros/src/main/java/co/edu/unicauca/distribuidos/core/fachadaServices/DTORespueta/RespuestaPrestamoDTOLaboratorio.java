@@ -10,13 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RespuestaPrestamoDTOLaboratorio {
-<<<<<<< HEAD
     private String codigoEstudiante;
-=======
-     private String nombreEstudiante;
-    private String equipo;
-    private String estado;
->>>>>>> e25775d1a30473dfd8c8a9c36990373fb254f017
+    private String nombreEstudiante;
     private LocalDate fechaPrestamo;
     private LocalDate fechaDevolucionEstimada;
     private LocalDate fechaDevolucionReal;
