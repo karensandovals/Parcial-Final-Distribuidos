@@ -24,13 +24,13 @@ public class PrestamoLaboratorioRepositorio {
     public List<prestamoLaboratorio> buscarPrestamosPendientes(String codigoEstudiante) {
         return prestamos.stream()
                 .filter(p -> p.getCodigoEstudiante().equals(codigoEstudiante)
-                        && !p.getEstado().equalsIgnoreCase("devuelto"))
+                        && !p.getEstadoPrestamo().equalsIgnoreCase("devuelto"))
                 .collect(Collectors.toList());
     }
 
     public boolean eliminarPrestamosPendientes(String codigoEstudiante) {
         return prestamos.removeIf(p -> p.getCodigoEstudiante().equals(codigoEstudiante)
-                && !p.getEstado().equalsIgnoreCase("devuelto"));
+                && !p.getEstadoPrestamo().equalsIgnoreCase("devuelto"));
     }
 
 }

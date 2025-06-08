@@ -58,7 +58,7 @@ function mostrarDeudas(area, data) {
     data.forEach(item => {
       const parrafo = document.createElement('p');
       if (area === 'financiera') {
-        parrafo.textContent = `Estudiante ${item.codigoEstudiante} debe $${item.valorDeuda} por concepto de ${item.concepto}.`;
+        parrafo.textContent = `Estudiante ${item.codigoEstudiante} debe $${item.montoAdeudado} por concepto de ${item.motivoDeuda}.`;
       } else if (area === 'laboratorio') {
         parrafo.textContent = `Estudiante ${item.codigoEstudiante} tiene pendiente el laboratorio: ${item.nombreLaboratorio}.`;
       } else if (area === 'deportes') {

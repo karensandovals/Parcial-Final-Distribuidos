@@ -12,9 +12,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RespuestaDeudaDTO {
     private String codigoEstudiante;
-    private double monto;
-    private String motivo;
-    private Date fechaGeneracion;
-    private Date fechaLimite;
-    private String estado; // pendiente, pagada, en mora
+    private double montoAdeudado;
+    private String motivoDeuda;
+    private Date fechaGeneracionDeuda;
+    private Date fechaLimitePago;
+    private String estadoDeuda; // pendiente, pagada, en mora
 }

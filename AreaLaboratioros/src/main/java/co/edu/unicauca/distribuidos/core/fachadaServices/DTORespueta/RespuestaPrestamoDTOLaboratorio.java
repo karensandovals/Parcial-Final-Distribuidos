@@ -10,9 +10,10 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RespuestaPrestamoDTOLaboratorio {
-    private String equipo;
-    private String estado; // activo, vencido
+    private String codigoEstudiante;
     private LocalDate fechaPrestamo;
     private LocalDate fechaDevolucionEstimada;
     private LocalDate fechaDevolucionReal;
+    private String estadoPrestamo; // activo, devuelto, vencido
+    private String equipoPrestado;
 }

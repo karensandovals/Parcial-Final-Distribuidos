@@ -21,11 +21,12 @@ public class ReservaLaboratorioImpl implements ReservaLaboratorioInt {
         List<prestamoLaboratorio> prestamos = repositorio.buscarPrestamosPendientes(peticion.getCodigoEstudiante());
         return prestamos.stream()
                 .map(p -> new RespuestaPrestamoDTOLaboratorio(
-                        p.getEquipo(),
-                        p.getEstado(),
+                        p.getCodigoEstudiante(),
                         p.getFechaPrestamo(),
                         p.getFechaDevolucionEstimada(),
-                        p.getFechaDevolucionReal()))
+                        p.getFechaDevolucionReal(),
+                        p.getEstadoPrestamo(),
+                        p.getEquipoPrestado()))
                 .collect(Collectors.toList());
     }
 
