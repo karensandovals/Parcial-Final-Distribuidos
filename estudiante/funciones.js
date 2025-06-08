@@ -89,11 +89,11 @@ function mostrarResultado(respuesta) {
   };
 
   renderLista("Financiera", respuesta.objFinanciera, item => 
-    `Debe $${item.valorDeuda} por concepto de ${item.concepto}`
+    `Debe $${item.montoAdeudado} por concepto de ${item.motivoDeuda}`
   );
 
   renderLista("Laboratorio", respuesta.objLaboratorio, item => 
-    `Tiene pendiente el laboratorio: ${item.nombreLaboratorio}`
+    `Tiene pendiente el laboratorio: ${item.equipoPrestado}`
   );
 
   renderLista("Deportes", respuesta.objDeportes, item => 

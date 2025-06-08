@@ -22,67 +22,30 @@
 </head>
 
 <body>
-  <div class="container main-container text-center">
-    <img src="imagenes/favicon.png" alt="Logo Universidad del Cauca" class="logo-unicauca mb-3">
-
+  <div class="container text-center main-container">
+    <img src="imagenes/favicon.png" class="logo-unicauca mb-3" alt="Logo Universidad del Cauca">
     <h1 class="titulo-institucional">Panel de Administración - Paz y Salvo</h1>
-    <p class="lead">Seleccione un área para recibir notificaciones en tiempo real sobre deudas de los estudiantes.</p>
+    <p class="lead">Seleccione un área y conéctese para recibir notificaciones en tiempo real.</p>
+
+    <div class="row justify-content-center mb-3">
+      <div class="col-md-6 d-flex gap-2">
+        <select id="selectArea" class="form-select">
+          <option value="laboratorio">Laboratorio</option>
+          <option value="financiera">Financiera</option>
+          <option value="deportes">Deportes</option>
+        </select>
+        <button id="btnConectar" class="btn btn-success" onclick="conectarArea()">Conectar</button>
+        <button id="btnDesconectar" class="btn btn-danger" onclick="desconectarArea()" disabled>Desconectar</button>
+      </div>
+    </div>
 
     <div class="row justify-content-center">
-      <!-- Área: Laboratorio -->
-      <div class="col-md-4 mb-4">
-        <div class="card card-custom">
-          <div class="card-body">
-            <h5 class="card-title"><i class="fas fa-microscope"></i> Laboratorio</h5>
-            <button id="btnConectar-laboratorio" class="btn btn-primary w-100 mb-2"
-              onclick="conectarAdministrador('laboratorio')">
-              Conectar <i class="fas fa-plug ms-1"></i>
-            </button>
-            <button id="btnDesconectar-laboratorio" class="btn btn-danger w-100 mb-3"
-              onclick="desconectarAdministrador('laboratorio')" disabled>
-              Desconectar <i class="fas fa-xmark ms-1"></i>
-            </button>
-            <div id="mensajes-laboratorio"></div>
-            <div id="deudas-laboratorio" class="text-start"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Área: Financiera -->
-      <div class="col-md-4 mb-4">
-        <div class="card card-custom">
-          <div class="card-body">
-            <h5 class="card-title"><i class="fas fa-coins"></i> Financiera</h5>
-            <button id="btnConectar-financiera" class="btn btn-primary w-100 mb-2"
-              onclick="conectarAdministrador('financiera')">
-              Conectar <i class="fas fa-plug ms-1"></i>
-            </button>
-            <button id="btnDesconectar-financiera" class="btn btn-danger w-100 mb-3"
-              onclick="desconectarAdministrador('financiera')" disabled>
-              Desconectar <i class="fas fa-xmark ms-1"></i>
-            </button>
-            <div id="mensajes-financiera"></div>
-            <div id="deudas-financiera" class="text-start"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Área: Deportes -->
-      <div class="col-md-4 mb-4">
-        <div class="card card-custom">
-          <div class="card-body">
-            <h5 class="card-title"><i class="fas fa-futbol"></i> Deportes</h5>
-            <button id="btnConectar-deportes" class="btn btn-primary w-100 mb-2"
-              onclick="conectarAdministrador('deportes')">
-              Conectar <i class="fas fa-plug ms-1"></i>
-            </button>
-            <button id="btnDesconectar-deportes" class="btn btn-danger w-100 mb-3"
-              onclick="desconectarAdministrador('deportes')" disabled>
-              Desconectar <i class="fas fa-xmark ms-1"></i>
-            </button>
-            <div id="mensajes-deportes"></div>
-            <div id="deudas-deportes" class="text-start"></div>
-          </div>
+      <div class="col-md-8">
+        <div class="card card-custom p-3 text-start">
+          <h5 class="mb-3">Mensajes del sistema</h5>
+          <div id="mensajes" class="mb-4"></div>
+          <h5 class="mb-3">Deudas del estudiante</h5>
+          <div id="deudas"></div>
         </div>
       </div>
     </div>

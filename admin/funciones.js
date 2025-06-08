@@ -1,93 +1,64 @@
-let clienteNotificaciones = null;
-let conexionesPorArea = {};
+let areaSeleccionada = null;
+let stompClient = null;
 
-function conectarAdministrador(area) {
-  if (conexionesPorArea[area]) {
-    console.warn(`Ya está conectado al área: ${area}`);
-    return;
-  }
+function conectarArea() {
+  areaSeleccionada = document.getElementById('selectArea').value;
 
   const socket = new SockJS('http://localhost:5004/ws');
-  const stomp = Stomp.over(socket);
-  clienteNotificaciones = stomp;
+  stompClient = Stomp.over(socket);
 
-  stomp.connect({}, function () {
-    console.log(`Conectado como administrador del área: ${area}`);
-    conexionesPorArea[area] = stomp;
-
-    stomp.subscribe(`/notificacion/general/${area}`, function (mensaje) {
-      mostrarMensajeGeneral(area, mensaje.body);
+  stompClient.connect({}, function () {
+    stompClient.subscribe(`/notificacion/general/${areaSeleccionada}`, function (mensaje) {
+      mostrarMensaje(mensaje.body);
     });
 
-    stomp.subscribe(`/notificacion/${area}`, function (mensaje) {
-      let data;
-      try {
-        data = JSON.parse(mensaje.body);
-      } catch (e) {
-        data = mensaje.body; // Es un string plano
-      }
-      mostrarDeudas(area, data);
+    stompClient.subscribe(`/notificacion/${areaSeleccionada}`, function (mensaje) {
+      mostrarDeudas(JSON.parse(mensaje.body));
     });
 
-    actualizarEstadoBotones(area, true);
+    document.getElementById('btnConectar').disabled = true;
+    document.getElementById('btnDesconectar').disabled = false;
   });
 }
 
-function desconectarAdministrador(area) {
-  const conexion = conexionesPorArea[area];
-  if (conexion) {
-    conexion.disconnect(() => {
-      console.log(`Desconectado del área: ${area}`);
-      delete conexionesPorArea[area];
-      actualizarEstadoBotones(area, false);
-      limpiarDeudas(area);
+function desconectarArea() {
+  if (stompClient) {
+    stompClient.disconnect(() => {
+      mostrarMensaje("Desconectado.");
+      document.getElementById('btnConectar').disabled = false;
+      document.getElementById('btnDesconectar').disabled = true;
+      document.getElementById('deudas').innerHTML = '';
     });
   }
 }
 
-function mostrarDeudas(area, data) {
-  const contenedor = document.getElementById(`deudas-${area}`);
+function mostrarDeudas(data) {
+  const contenedor = document.getElementById('deudas');
   contenedor.innerHTML = '';
 
-  if (typeof data === 'string') {
-    const parrafo = document.createElement('p');
-    parrafo.classList.add('fw-bold', 'text-info'); // Opcional: estilo especial
-    parrafo.textContent = data;
-    contenedor.appendChild(parrafo);
-  } else if (Array.isArray(data) && data.length > 0) {
-    data.forEach(item => {
-      const parrafo = document.createElement('p');
-      if (area === 'financiera') {
-        parrafo.textContent = `Estudiante ${item.codigoEstudiante} debe $${item.montoAdeudado} por concepto de ${item.motivoDeuda}.`;
-      } else if (area === 'laboratorio') {
-        parrafo.textContent = `Estudiante ${item.codigoEstudiante} tiene pendiente el laboratorio: ${item.nombreLaboratorio}.`;
-      } else if (area === 'deportes') {
-        parrafo.textContent = `Estudiante ${item.codigoEstudiante} debe devolver el implemento: ${item.nombreElemento}.`;
-      }
-      contenedor.appendChild(parrafo);
-    });
-  } else {
-    const vacio = document.createElement('p');
-    vacio.textContent = 'El estudiante esta a paz y salvo con el area. No tiene deudas registradas.';
-    contenedor.appendChild(vacio);
+  if (!data || data.length === 0) {
+    contenedor.innerHTML = '<p>El estudiante está a paz y salvo.</p>';
+    return;
   }
+
+  data.forEach(item => {
+    const p = document.createElement('p');
+    if (areaSeleccionada === 'financiera') {
+      p.textContent = `Estudiante ${item.codigoEstudiante} debe $${item.montoAdeudado} por ${item.motivoDeuda}.`;
+    } else if (areaSeleccionada === 'laboratorio') {
+      p.textContent = `Estudiante ${item.codigoEstudiante} debe devolver: ${item.equipoPrestado}.`;
+    } else if (areaSeleccionada === 'deportes') {
+      p.textContent = `Estudiante ${item.codigoEstudiante} debe el implemento: ${item.nombreElemento}.`;
+    }
+    contenedor.appendChild(p);
+  });
 }
 
-function mostrarMensajeGeneral(area, mensaje) {
-  const contenedor = document.getElementById(`mensajes-${area}`);
-  const parrafo = document.createElement('p');
-  parrafo.classList.add('fw-bold', 'text-info');
-  parrafo.textContent = mensaje;
-  contenedor.appendChild(parrafo);
+function mostrarMensaje(msg) {
+  const contenedor = document.getElementById('mensajes');
+  const p = document.createElement('p');
+  p.textContent = msg;
+  p.classList.add('fw-bold', 'text-info');
+  contenedor.appendChild(p);
 }
 
-
-function limpiarDeudas(area) {
-  const contenedor = document.getElementById(`deudas-${area}`);
-  contenedor.innerHTML = '<p>Desconectado.</p>';
-}
-
-function actualizarEstadoBotones(area, conectado) {
-  document.getElementById(`btnConectar-${area}`).disabled = conectado;
-  document.getElementById(`btnDesconectar-${area}`).disabled = !conectado;
-}

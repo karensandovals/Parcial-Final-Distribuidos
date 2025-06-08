@@ -65,3 +65,10 @@ body {
 .d-none {
   display: none !important;
 }
+
+#mensajes, #deudas {
+  min-height: 120px;
+  background-color: #f0f4f8;
+  padding: 10px;
+  border-radius: 8px;
+}
