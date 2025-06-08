@@ -7,8 +7,8 @@ import lombok.Data;
 @Data
 public class RespuestaPazYSalvoDTO {
     private String codigoEstudiante;
+    private String mensaje; 
     private List<RespuestaPazYSalvoDTOLaboratorio> objLaboratorio;
     private List<RespuestaPazYSalvoDTOFinanciera> objFinanciera;
-    private List<RespuestaPazYSalvoDTODeportes> objDeportes;
-    private String mensaje; 
+    private List<RespuestaPazYSalvoDTODeportes> objDeportes;  
 }

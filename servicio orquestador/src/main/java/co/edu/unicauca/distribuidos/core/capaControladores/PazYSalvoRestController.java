@@ -1,3 +1,4 @@
+
 package co.edu.unicauca.distribuidos.core.capaControladores;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,16 +18,16 @@ public class PazYSalvoRestController {
 
 	@Autowired
 	private GenerarPazYSalvoInt objFachada;
-
+	
 	@PostMapping("/orquestadorSincrono")
 	public RespuestaPazYSalvoDTO orquestarServiciosSincronicamente(@RequestBody PeticionPazYSalvoDTO objPeticion) {
-		RespuestaPazYSalvoDTO objResultado = this.objFachada.verificarPazYSalvo(objPeticion);
+		RespuestaPazYSalvoDTO objResultado = this.objFachada.consultarPazYSalvo(objPeticion);
 		return objResultado;
 	}
 
 	@PostMapping("/orquestadorAsincrono")
 	public Mono<RespuestaPazYSalvoDTO> orquestarServiciosAsincronicamente(@RequestBody PeticionPazYSalvoDTO objPeticion) {
-		Mono<RespuestaPazYSalvoDTO> objResultado = this.objFachada.verificarPazYSalvoAsincrono(objPeticion);
+		Mono<RespuestaPazYSalvoDTO> objResultado = this.objFachada.consultarPazYSalvoAsincrono(objPeticion);
 		return objResultado;
 	}
 	

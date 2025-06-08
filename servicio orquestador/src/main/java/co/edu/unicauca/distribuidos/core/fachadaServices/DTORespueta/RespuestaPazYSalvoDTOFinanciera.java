@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RespuestaPazYSalvoDTOFinanciera {
+    private String codigoEstudiante;
     private double montoAdeudado;
     private String motivoDeuda;
     private Date fechaGeneracionDeuda;

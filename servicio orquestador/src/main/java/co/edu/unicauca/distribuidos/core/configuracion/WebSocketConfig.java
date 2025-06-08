@@ -20,10 +20,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        // Punto de entrada WebSocket para los clientes (por ejemplo, desde Angular)
+        
         registry.addEndpoint("/ws")
-                .setAllowedOrigins("*") // Reemplazar con el dominio real en producción
+                .setAllowedOrigins("*") 
                 .withSockJS(); // Para compatibilidad con navegadores antiguos
     }
 }
-

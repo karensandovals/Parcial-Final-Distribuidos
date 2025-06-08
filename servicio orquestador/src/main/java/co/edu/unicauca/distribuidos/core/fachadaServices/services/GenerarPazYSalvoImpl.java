@@ -1,6 +1,5 @@
 package co.edu.unicauca.distribuidos.core.fachadaServices.services;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,248 +17,114 @@ import reactor.core.publisher.Mono;
 @Service
 public class GenerarPazYSalvoImpl implements GenerarPazYSalvoInt {
 
-        @Autowired
-        private WebClient webClient;
+    @Autowired
+    private WebClient webClient;
 
-        @Autowired
-        private SimpMessagingTemplate messagingTemplate;
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
 
-        private static final String URL_LAB = "http://localhost:5001/api/laboratorio";
-        private static final String URL_FIN = "http://localhost:5002/api/deudas";
-        private static final String URL_DEP = "http://localhost:5003/api/deportes";
+    private final String LABORATORIO_URL = "http://localhost:5001/api/laboratorio";
+    private final String FINANCIERA_URL = "http://localhost:5002/api/financiera";
+    private final String DEPORTES_URL = "http://localhost:5003/api/deportes";
 
-        private static final String NOTIFICACION_LAB = "/notificacion/admin/laboratorio";
-        private static final String NOTIFICACION_FIN = "/notificacion/admin/financiera";
-        private static final String NOTIFICACION_DEP = "/notificacion/admin/deportes";
+    @Override
+    public RespuestaPazYSalvoDTO consultarPazYSalvo(PeticionPazYSalvoDTO peticion) {
+        RespuestaPazYSalvoDTO respuesta = new RespuestaPazYSalvoDTO();
+        respuesta.setCodigoEstudiante(peticion.getCodigoEstudiante());
 
-        @Override
-        public RespuestaPazYSalvoDTO verificarPazYSalvo(PeticionPazYSalvoDTO objPeticion) {
-                // 1) Notificación inicial a los 3 admins
-                String notiInicio = String.format(
-                                "El estudiante con código %s y nombres %s ha realizado una nueva solicitud de paz y salvo",
-                                objPeticion.getCodigoEstudiante(), objPeticion.getNombresEstudiante());
-                messagingTemplate.convertAndSend(NOTIFICACION_LAB, notiInicio);
-                messagingTemplate.convertAndSend(NOTIFICACION_FIN, notiInicio);
-                messagingTemplate.convertAndSend(NOTIFICACION_DEP, notiInicio);
+        try {
+            // 1. Consultar Laboratorio
+            List<RespuestaPazYSalvoDTOLaboratorio> laboratorio = webClient.post()
+                .uri(LABORATORIO_URL)
+                .bodyValue(peticion)
+                .retrieve()
+                .bodyToFlux(RespuestaPazYSalvoDTOLaboratorio.class)
+                .collectList()
+                .block();
 
-                RespuestaPazYSalvoDTO objRespuestaPazYSalvo = new RespuestaPazYSalvoDTO();
+            respuesta.setObjLaboratorio(laboratorio);
+            notificar("laboratorio", laboratorio);
 
-                try {
-                        // 2. Consultar al servicio del area de laboratorios sobre el estado del
-                        // estudiante
-                        List<RespuestaPazYSalvoDTOLaboratorio> objRespuestaLaboratorio = webClient.post()
-                                        .uri(URL_LAB)
-                                        .bodyValue(objPeticion)
-                                        .retrieve()
-                                        .bodyToFlux(RespuestaPazYSalvoDTOLaboratorio.class)
-                                        .collectList()
-                                        .block(); // sincrono
-                        objRespuestaPazYSalvo.setObjLaboratorio(
-                                        objRespuestaLaboratorio != null ? objRespuestaLaboratorio
-                                                        : Collections.emptyList());
+            // 2. Consultar Financiera
+            List<RespuestaPazYSalvoDTOFinanciera> financiera = webClient.post()
+                .uri(FINANCIERA_URL)
+                .bodyValue(peticion)
+                .retrieve()
+                .bodyToFlux(RespuestaPazYSalvoDTOFinanciera.class)
+                .collectList()
+                .block();
 
-                        // 3. Consultar al servicio del area de financiera sobre el estado del
-                        // estudiante
-                        List<RespuestaPazYSalvoDTOFinanciera> objRespuestaFinanciera = webClient.post()
-                                        .uri(URL_FIN)
-                                        .bodyValue(objPeticion)
-                                        .retrieve()
-                                        .bodyToFlux(RespuestaPazYSalvoDTOFinanciera.class)
-                                        .collectList()
-                                        .block(); // sincrono
-                        objRespuestaPazYSalvo.setObjFinanciera(
-                                        objRespuestaFinanciera != null ? objRespuestaFinanciera
-                                                        : Collections.emptyList());
+            respuesta.setObjFinanciera(financiera);
+            notificar("financiera", financiera);
 
-                        // 4. Consultar al servicio del area de deportes sobre el estado del estudiante
-                        List<RespuestaPazYSalvoDTODeportes> objRespuestaDeportes = webClient.post()
-                                        .uri(URL_DEP)
-                                        .bodyValue(objPeticion)
-                                        .retrieve()
-                                        .bodyToFlux(RespuestaPazYSalvoDTODeportes.class)
-                                        .collectList()
-                                        .block(); // sincrono
-                        objRespuestaPazYSalvo
-                                        .setObjDeportes(objRespuestaDeportes != null ? objRespuestaDeportes
-                                                        : Collections.emptyList());
+            // 3. Consultar Deportes
+            List<RespuestaPazYSalvoDTODeportes> deportes = webClient.post()
+                .uri(DEPORTES_URL)
+                .bodyValue(peticion)
+                .retrieve()
+                .bodyToFlux(RespuestaPazYSalvoDTODeportes.class)
+                .collectList()
+                .block();
 
-                        // 5. Determinar paz y salvo global
-                        boolean ok = objRespuestaPazYSalvo.getObjLaboratorio().isEmpty()
-                                        && objRespuestaPazYSalvo.getObjFinanciera().isEmpty()
-                                        && objRespuestaPazYSalvo.getObjDeportes().isEmpty();
+            respuesta.setObjDeportes(deportes);
+            notificar("deportes", deportes);
 
-                        if (ok) {
-                                objRespuestaPazYSalvo.setMensaje("El estudiante se encuentra a paz y salvo");
-                                // 6. Notificar a los admins por área
-                                messagingTemplate.convertAndSend(NOTIFICACION_LAB, objRespuestaPazYSalvo.getMensaje());
-                                messagingTemplate.convertAndSend(NOTIFICACION_FIN, objRespuestaPazYSalvo.getMensaje());
-                                messagingTemplate.convertAndSend(NOTIFICACION_DEP, objRespuestaPazYSalvo.getMensaje());
-                        }
+            respuesta.setMensaje("Consulta completada con éxito.");
 
-                } catch (Exception e) {
-                        // manejo de reintentos, timeouts, etc. según enunciado
-                        objRespuestaPazYSalvo.setMensaje("No se pudo generar el paz y salvo");
-
-                        String mensajeLab = objRespuestaPazYSalvo.getMensaje()
-                                        + consultarPrestamosDeEquiposDeLaboratorio(objRespuestaPazYSalvo);
-                        String mensajeFin = objRespuestaPazYSalvo.getMensaje()
-                                        + consultarDeudasFinancieras(objRespuestaPazYSalvo);
-                        String mensajeDep = objRespuestaPazYSalvo.getMensaje()
-                                        + consultarImplementosDeportivosNoRetornados(objRespuestaPazYSalvo);
-
-                        System.out.println(e.getMessage());
-
-                        messagingTemplate.convertAndSend(NOTIFICACION_LAB, mensajeLab);
-                        messagingTemplate.convertAndSend(NOTIFICACION_FIN, mensajeFin);
-                        messagingTemplate.convertAndSend(NOTIFICACION_DEP, mensajeDep);
-                }
-
-                return objRespuestaPazYSalvo;
+        } catch (Exception e) {
+            respuesta.setMensaje("Error durante la consulta: " + e.getMessage());
         }
 
-        @Override
-        public Mono<RespuestaPazYSalvoDTO> verificarPazYSalvoAsincrono(PeticionPazYSalvoDTO peticion) {
-                // Notificación inicial
-                String notiInicio = String.format(
-                                "El estudiante con código %s y nombres %s ha realizado una nueva solicitud de paz y salvo",
-                                peticion.getCodigoEstudiante(), peticion.getNombresEstudiante());
+        return respuesta;
+    }
 
-                messagingTemplate.convertAndSend(NOTIFICACION_LAB, notiInicio);
-                messagingTemplate.convertAndSend(NOTIFICACION_FIN, notiInicio);
-                messagingTemplate.convertAndSend(NOTIFICACION_DEP, notiInicio);
+    @Override
+    public Mono<RespuestaPazYSalvoDTO> consultarPazYSalvoAsincrono(PeticionPazYSalvoDTO peticion) {
+        Mono<List<RespuestaPazYSalvoDTOLaboratorio>> laboratorioMono = webClient.post()
+            .uri(LABORATORIO_URL)
+            .bodyValue(peticion)
+            .retrieve()
+            .bodyToFlux(RespuestaPazYSalvoDTOLaboratorio.class)
+            .collectList()
+            .doOnNext(lab -> notificar("laboratorio", lab));
 
-                RespuestaPazYSalvoDTO objRespuestaPazYSalvo = new RespuestaPazYSalvoDTO();
+        Mono<List<RespuestaPazYSalvoDTOFinanciera>> financieraMono = webClient.post()
+            .uri(FINANCIERA_URL)
+            .bodyValue(peticion)
+            .retrieve()
+            .bodyToFlux(RespuestaPazYSalvoDTOFinanciera.class)
+            .collectList()
+            .doOnNext(fin -> notificar("financiera", fin));
 
-                // Llamadas asíncronas a los servicios de paz y salvo
-                // Lllamadas al servicio del area de laboratorios
-                Mono<List<RespuestaPazYSalvoDTOLaboratorio>> objRespuestaLaboratorio = webClient.post()
-                                .uri(URL_LAB)
-                                .bodyValue(peticion)
-                                .retrieve()
-                                .bodyToFlux(RespuestaPazYSalvoDTOLaboratorio.class)
-                                .collectList()
-                                .doOnError(e -> System.err
-                                                .println("Error verificando el paz y salvo en el area de laboratorios: "
-                                                                + e.getMessage()))
-                                .onErrorReturn(Collections.emptyList());
+        Mono<List<RespuestaPazYSalvoDTODeportes>> deportesMono = webClient.post()
+            .uri(DEPORTES_URL)
+            .bodyValue(peticion)
+            .retrieve()
+            .bodyToFlux(RespuestaPazYSalvoDTODeportes.class)
+            .collectList()
+            .doOnNext(dep -> notificar("deportes", dep));
 
-                // Llamadas al servicio del area de financiera
-                Mono<List<RespuestaPazYSalvoDTOFinanciera>> objRespuestaFinanciera = webClient.post()
-                                .uri(URL_FIN)
-                                .bodyValue(peticion)
-                                .retrieve()
-                                .bodyToFlux(RespuestaPazYSalvoDTOFinanciera.class)
-                                .collectList()
-                                .doOnError(e -> System.err
-                                                .println("Error verificando el paz y salvo en el area de financiera: "
-                                                                + e.getMessage()))
-                                .onErrorReturn(Collections.emptyList());
+        return Mono.zip(laboratorioMono, financieraMono, deportesMono)
+            .map(tuple -> {
+                RespuestaPazYSalvoDTO respuesta = new RespuestaPazYSalvoDTO();
+                respuesta.setCodigoEstudiante(peticion.getCodigoEstudiante());
+                respuesta.setObjLaboratorio(tuple.getT1());
+                respuesta.setObjFinanciera(tuple.getT2());
+                respuesta.setObjDeportes(tuple.getT3());
+                respuesta.setMensaje("Consulta asincrónica exitosa.");
+                return respuesta;
+            })
+            .onErrorResume(e -> {
+                RespuestaPazYSalvoDTO respuesta = new RespuestaPazYSalvoDTO();
+                respuesta.setCodigoEstudiante(peticion.getCodigoEstudiante());
+                respuesta.setMensaje("Error en la consulta asincrónica: " + e.getMessage());
+                return Mono.just(respuesta);
+            });
+    }
 
-                Mono<List<RespuestaPazYSalvoDTODeportes>> objRespuestaDeportes = webClient.post()
-                                .uri(URL_DEP)
-                                .bodyValue(peticion)
-                                .retrieve()
-                                .bodyToFlux(RespuestaPazYSalvoDTODeportes.class)
-                                .collectList()
-                                .doOnError(e -> System.err
-                                                .println("Error verificando el paz y salvo en el area de deportes: "
-                                                                + e.getMessage()))
-                                .onErrorReturn(Collections.emptyList());
-
-                // Composición de respuestas
-                return Mono.zip(objRespuestaLaboratorio, objRespuestaFinanciera, objRespuestaDeportes)
-                                .map(results -> {
-                                        objRespuestaPazYSalvo.setObjLaboratorio(results.getT1());
-                                        objRespuestaPazYSalvo.setObjFinanciera(results.getT2());
-                                        objRespuestaPazYSalvo.setObjDeportes(results.getT3());
-
-                                        boolean ok = results.getT1().isEmpty()
-                                                        && results.getT2().isEmpty()
-                                                        && results.getT3().isEmpty();
-
-                                        if (ok) {
-                                                objRespuestaPazYSalvo
-                                                                .setMensaje("El estudiante se encuentra a paz y salvo");
-                                                // 6. Notificar a los admins por área
-                                                messagingTemplate.convertAndSend(NOTIFICACION_LAB,
-                                                                objRespuestaPazYSalvo.getMensaje());
-                                                messagingTemplate.convertAndSend(NOTIFICACION_FIN,
-                                                                objRespuestaPazYSalvo.getMensaje());
-                                                messagingTemplate.convertAndSend(NOTIFICACION_DEP,
-                                                                objRespuestaPazYSalvo.getMensaje());
-                                        }
-                                        return objRespuestaPazYSalvo;
-                                })
-                                .onErrorResume(error -> {
-                                        RespuestaPazYSalvoDTO respuesta = new RespuestaPazYSalvoDTO();
-                                        respuesta.setMensaje("No se pudo generar el paz y salvo");
-
-                                        String mensajeLab = respuesta.getMensaje()
-                                                        + consultarPrestamosDeEquiposDeLaboratorio(
-                                                                        objRespuestaPazYSalvo);
-                                        String mensajeFin = respuesta.getMensaje()
-                                                        + consultarDeudasFinancieras(objRespuestaPazYSalvo);
-                                        String mensajeDep = respuesta.getMensaje()
-                                                        + consultarImplementosDeportivosNoRetornados(
-                                                                        objRespuestaPazYSalvo);
-
-                                        messagingTemplate.convertAndSend(NOTIFICACION_LAB, mensajeLab);
-                                        messagingTemplate.convertAndSend(NOTIFICACION_FIN, mensajeFin);
-                                        messagingTemplate.convertAndSend(NOTIFICACION_DEP, mensajeDep);
-
-                                        return Mono.just(respuesta);
-                                });
-        }
-
-        private String consultarPrestamosDeEquiposDeLaboratorio(RespuestaPazYSalvoDTO objPazYSalvo) {
-                List<RespuestaPazYSalvoDTOLaboratorio> objLaboratorio = webClient.post()
-                                .uri(URL_LAB)
-                                .bodyValue(objPazYSalvo.getCodigoEstudiante())
-                                .retrieve()
-                                .bodyToFlux(RespuestaPazYSalvoDTOLaboratorio.class)
-                                .collectList()
-                                .block();
-
-                if (objLaboratorio != null && !objLaboratorio.isEmpty()) {
-                        StringBuilder mensaje = new StringBuilder("Laboratorio: Préstamos activos:\n");
-                        objLaboratorio.forEach(p -> mensaje.append(p.toString()).append("\n"));
-                        return mensaje.toString();
-                }
-                return "";
-        }
-
-        private String consultarDeudasFinancieras(RespuestaPazYSalvoDTO objPazYSalvo) {
-                List<RespuestaPazYSalvoDTOFinanciera> objFinanciera = webClient.post()
-                                .uri(URL_FIN)
-                                .bodyValue(objPazYSalvo.getCodigoEstudiante())
-                                .retrieve()
-                                .bodyToFlux(RespuestaPazYSalvoDTOFinanciera.class)
-                                .collectList()
-                                .block();
-
-                if (objFinanciera != null && !objFinanciera.isEmpty()) {
-                        StringBuilder mensaje = new StringBuilder("Financiera: Deudas encontradas:\n");
-                        objFinanciera.forEach(d -> mensaje.append(d.toString()).append("\n"));
-                        return mensaje.toString();
-                }
-                return "";
-        }
-
-        private String consultarImplementosDeportivosNoRetornados(RespuestaPazYSalvoDTO objPazYSalvo) {
-                List<RespuestaPazYSalvoDTODeportes> objDeportes = webClient.post()
-                                .uri(URL_DEP)
-                                .bodyValue(objPazYSalvo.getCodigoEstudiante())
-                                .retrieve()
-                                .bodyToFlux(RespuestaPazYSalvoDTODeportes.class)
-                                .collectList()
-                                .block();
-
-                if (objDeportes != null && !objDeportes.isEmpty()) {
-                        StringBuilder mensaje = new StringBuilder("Deportes: Implementos no retornados:\n");
-                        objDeportes.forEach(i -> mensaje.append(i.toString()).append("\n"));
-                        return mensaje.toString();
-                }
-                return "";
-        }
-
+    private void notificar(String canal, Object mensaje) {
+        String destino = "/notificacion/" + canal;
+        messagingTemplate.convertAndSend(destino, mensaje);
+    }
 }
+

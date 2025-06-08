@@ -12,6 +12,10 @@
   <!-- Estilos personalizados -->
   <link rel="stylesheet" href="estilos.css">
 
+  <!-- SockJS y StompJS -->
+  <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+
   <!-- Lógica -->
   <script defer src="funciones.js"></script>
 </head>
@@ -36,10 +40,6 @@
             <div class="mb-3">
               <label for="codigoEstudiante" class="form-label">Código del Estudiante</label>
               <input type="text" class="form-control" id="codigoEstudiante" placeholder="Ej. 2020123456" required>
-            </div>
-            <div class="mb-3">
-              <label for="nombreCompleto" class="form-label">Nombre Completo</label>
-              <input type="text" class="form-control" id="nombreCompleto" placeholder="Ej. Juan Pérez" required>
             </div>
             <div class="d-grid">
               <button type="submit" class="btn btn-primary">
