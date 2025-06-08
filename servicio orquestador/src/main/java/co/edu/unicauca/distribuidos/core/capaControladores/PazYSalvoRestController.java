@@ -2,6 +2,7 @@
 package co.edu.unicauca.distribuidos.core.capaControladores;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +14,7 @@ import co.edu.unicauca.distribuidos.core.fachadaServices.services.GenerarPazYSal
 import reactor.core.publisher.Mono;
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/api")
 public class PazYSalvoRestController {
 

@@ -32,44 +32,50 @@ public class GenerarPazYSalvoImpl implements GenerarPazYSalvoInt {
         RespuestaPazYSalvoDTO respuesta = new RespuestaPazYSalvoDTO();
         respuesta.setCodigoEstudiante(peticion.getCodigoEstudiante());
 
+        // Notificar a administradores
+        notificarAdministradores(peticion.getCodigoEstudiante(), peticion.getNombresEstudiante());
+        
         try {
             // 1. Consultar Laboratorio
             List<RespuestaPazYSalvoDTOLaboratorio> laboratorio = webClient.post()
-                .uri(LABORATORIO_URL)
-                .bodyValue(peticion)
-                .retrieve()
-                .bodyToFlux(RespuestaPazYSalvoDTOLaboratorio.class)
-                .collectList()
-                .block();
+                    .uri(LABORATORIO_URL)
+                    .bodyValue(peticion)
+                    .retrieve()
+                    .bodyToFlux(RespuestaPazYSalvoDTOLaboratorio.class)
+                    .collectList()
+                    .block();
 
             respuesta.setObjLaboratorio(laboratorio);
             notificar("laboratorio", laboratorio);
 
             // 2. Consultar Financiera
             List<RespuestaPazYSalvoDTOFinanciera> financiera = webClient.post()
-                .uri(FINANCIERA_URL)
-                .bodyValue(peticion)
-                .retrieve()
-                .bodyToFlux(RespuestaPazYSalvoDTOFinanciera.class)
-                .collectList()
-                .block();
+                    .uri(FINANCIERA_URL)
+                    .bodyValue(peticion)
+                    .retrieve()
+                    .bodyToFlux(RespuestaPazYSalvoDTOFinanciera.class)
+                    .collectList()
+                    .block();
 
             respuesta.setObjFinanciera(financiera);
             notificar("financiera", financiera);
 
             // 3. Consultar Deportes
             List<RespuestaPazYSalvoDTODeportes> deportes = webClient.post()
-                .uri(DEPORTES_URL)
-                .bodyValue(peticion)
-                .retrieve()
-                .bodyToFlux(RespuestaPazYSalvoDTODeportes.class)
-                .collectList()
-                .block();
+                    .uri(DEPORTES_URL)
+                    .bodyValue(peticion)
+                    .retrieve()
+                    .bodyToFlux(RespuestaPazYSalvoDTODeportes.class)
+                    .collectList()
+                    .block();
 
             respuesta.setObjDeportes(deportes);
             notificar("deportes", deportes);
 
             respuesta.setMensaje("Consulta completada con éxito.");
+
+            // Notificar tambien al estudiante
+            notificarEstudiante(peticion.getCodigoEstudiante(), respuesta);
 
         } catch (Exception e) {
             respuesta.setMensaje("Error durante la consulta: " + e.getMessage());
@@ -81,50 +87,69 @@ public class GenerarPazYSalvoImpl implements GenerarPazYSalvoInt {
     @Override
     public Mono<RespuestaPazYSalvoDTO> consultarPazYSalvoAsincrono(PeticionPazYSalvoDTO peticion) {
         Mono<List<RespuestaPazYSalvoDTOLaboratorio>> laboratorioMono = webClient.post()
-            .uri(LABORATORIO_URL)
-            .bodyValue(peticion)
-            .retrieve()
-            .bodyToFlux(RespuestaPazYSalvoDTOLaboratorio.class)
-            .collectList()
-            .doOnNext(lab -> notificar("laboratorio", lab));
+                .uri(LABORATORIO_URL)
+                .bodyValue(peticion)
+                .retrieve()
+                .bodyToFlux(RespuestaPazYSalvoDTOLaboratorio.class)
+                .collectList()
+                .doOnNext(lab -> notificar("laboratorio", lab));
 
         Mono<List<RespuestaPazYSalvoDTOFinanciera>> financieraMono = webClient.post()
-            .uri(FINANCIERA_URL)
-            .bodyValue(peticion)
-            .retrieve()
-            .bodyToFlux(RespuestaPazYSalvoDTOFinanciera.class)
-            .collectList()
-            .doOnNext(fin -> notificar("financiera", fin));
+                .uri(FINANCIERA_URL)
+                .bodyValue(peticion)
+                .retrieve()
+                .bodyToFlux(RespuestaPazYSalvoDTOFinanciera.class)
+                .collectList()
+                .doOnNext(fin -> notificar("financiera", fin));
 
         Mono<List<RespuestaPazYSalvoDTODeportes>> deportesMono = webClient.post()
-            .uri(DEPORTES_URL)
-            .bodyValue(peticion)
-            .retrieve()
-            .bodyToFlux(RespuestaPazYSalvoDTODeportes.class)
-            .collectList()
-            .doOnNext(dep -> notificar("deportes", dep));
+                .uri(DEPORTES_URL)
+                .bodyValue(peticion)
+                .retrieve()
+                .bodyToFlux(RespuestaPazYSalvoDTODeportes.class)
+                .collectList()
+                .doOnNext(dep -> notificar("deportes", dep));
 
         return Mono.zip(laboratorioMono, financieraMono, deportesMono)
-            .map(tuple -> {
-                RespuestaPazYSalvoDTO respuesta = new RespuestaPazYSalvoDTO();
-                respuesta.setCodigoEstudiante(peticion.getCodigoEstudiante());
-                respuesta.setObjLaboratorio(tuple.getT1());
-                respuesta.setObjFinanciera(tuple.getT2());
-                respuesta.setObjDeportes(tuple.getT3());
-                respuesta.setMensaje("Consulta asincrónica exitosa.");
-                return respuesta;
-            })
-            .onErrorResume(e -> {
-                RespuestaPazYSalvoDTO respuesta = new RespuestaPazYSalvoDTO();
-                respuesta.setCodigoEstudiante(peticion.getCodigoEstudiante());
-                respuesta.setMensaje("Error en la consulta asincrónica: " + e.getMessage());
-                return Mono.just(respuesta);
-            });
+                .map(tuple -> {
+                    RespuestaPazYSalvoDTO respuesta = new RespuestaPazYSalvoDTO();
+                    respuesta.setCodigoEstudiante(peticion.getCodigoEstudiante());
+                    respuesta.setObjLaboratorio(tuple.getT1());
+                    respuesta.setObjFinanciera(tuple.getT2());
+                    respuesta.setObjDeportes(tuple.getT3());
+                    respuesta.setMensaje("Consulta asincrónica exitosa.");
+
+                    // Notificar a administradores
+                    notificarAdministradores(peticion.getCodigoEstudiante(), peticion.getNombresEstudiante());
+
+                    // Notificar al estudiante
+                    notificarEstudiante(peticion.getCodigoEstudiante(), respuesta);
+                    return respuesta;
+                })
+                .onErrorResume(e -> {
+                    RespuestaPazYSalvoDTO respuesta = new RespuestaPazYSalvoDTO();
+                    respuesta.setCodigoEstudiante(peticion.getCodigoEstudiante());
+                    respuesta.setMensaje("Error en la consulta asincrónica: " + e.getMessage());
+                    return Mono.just(respuesta);
+                });
     }
 
     private void notificar(String canal, Object mensaje) {
         String destino = "/notificacion/" + canal;
         messagingTemplate.convertAndSend(destino, mensaje);
     }
-}
 
+    private void notificarEstudiante(String codigoEstudiante, Object mensaje) {
+        String destino = "/notificacion/estudiante/" + codigoEstudiante;
+        messagingTemplate.convertAndSend(destino, mensaje);
+    }
+
+    private void notificarAdministradores(String codigoEstudiante, String nombres) {
+        String mensaje = String.format(
+                "El estudiante con código %s y nombres %s ha realizado una nueva solicitud de paz y salvo",
+                codigoEstudiante, nombres);
+        messagingTemplate.convertAndSend("/notificacion/general/laboratorio", mensaje);
+        messagingTemplate.convertAndSend("/notificacion/general/financiera", mensaje);
+        messagingTemplate.convertAndSend("/notificacion/general/deportes", mensaje);
+    }
+}
