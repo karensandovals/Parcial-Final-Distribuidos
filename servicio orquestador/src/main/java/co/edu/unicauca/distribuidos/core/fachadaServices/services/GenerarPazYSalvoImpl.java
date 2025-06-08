@@ -27,6 +27,11 @@ public class GenerarPazYSalvoImpl implements GenerarPazYSalvoInt {
     private final String FINANCIERA_URL = "http://localhost:5003/api/deudas";
     private final String DEPORTES_URL = "http://localhost:5008/api/deportes";
 
+    private final String ELIMINAR_LABORATORIO_URL = "http://localhost:5001/api/laboratorio/eliminar";
+    private final String ELIMINAR_FINANCIERA_URL = "http://localhost:5003/api/deudas/";
+    private final String ELIMINAR_DEPORTES_URL = "http://localhost:5008/api/deportes/";
+
+
     @Override
     public RespuestaPazYSalvoDTO consultarPazYSalvo(PeticionPazYSalvoDTO peticion) {
         RespuestaPazYSalvoDTO respuesta = new RespuestaPazYSalvoDTO();
@@ -34,7 +39,7 @@ public class GenerarPazYSalvoImpl implements GenerarPazYSalvoInt {
 
         // Notificar a administradores
         notificarAdministradores(peticion.getCodigoEstudiante(), peticion.getNombresEstudiante());
-        
+
         try {
             // 1. Consultar Laboratorio
             List<RespuestaPazYSalvoDTOLaboratorio> laboratorio = webClient.post()
@@ -132,6 +137,36 @@ public class GenerarPazYSalvoImpl implements GenerarPazYSalvoInt {
                     respuesta.setMensaje("Error en la consulta asincrónica: " + e.getMessage());
                     return Mono.just(respuesta);
                 });
+    }
+
+    @Override
+    public void eliminarDeudasLaboratorio(PeticionPazYSalvoDTO peticion) {
+        webClient.post()
+                .uri(ELIMINAR_LABORATORIO_URL)
+                .bodyValue(peticion)
+                .retrieve()
+                .bodyToMono(Void.class)
+                .block();
+    }
+
+    @Override
+    public void eliminarDeudasFinanciera(PeticionPazYSalvoDTO peticion) {
+        webClient.post()
+                .uri(ELIMINAR_FINANCIERA_URL)
+                .bodyValue(peticion)
+                .retrieve()
+                .bodyToMono(Void.class)
+                .block();
+    }
+
+    @Override
+    public void eliminarDeudasDeportes(PeticionPazYSalvoDTO peticion) {
+        webClient.post()
+                .uri(ELIMINAR_DEPORTES_URL)
+                .bodyValue(peticion)
+                .retrieve()
+                .bodyToMono(Void.class)
+                .block();
     }
 
     private void notificar(String canal, Object mensaje) {

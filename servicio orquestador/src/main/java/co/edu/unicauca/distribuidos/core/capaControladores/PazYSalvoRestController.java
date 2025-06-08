@@ -2,6 +2,7 @@
 package co.edu.unicauca.distribuidos.core.capaControladores;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,7 +21,7 @@ public class PazYSalvoRestController {
 
 	@Autowired
 	private GenerarPazYSalvoInt objFachada;
-	
+
 	@PostMapping("/orquestadorSincrono")
 	public RespuestaPazYSalvoDTO orquestarServiciosSincronicamente(@RequestBody PeticionPazYSalvoDTO objPeticion) {
 		RespuestaPazYSalvoDTO objResultado = this.objFachada.consultarPazYSalvo(objPeticion);
@@ -28,9 +29,28 @@ public class PazYSalvoRestController {
 	}
 
 	@PostMapping("/orquestadorAsincrono")
-	public Mono<RespuestaPazYSalvoDTO> orquestarServiciosAsincronicamente(@RequestBody PeticionPazYSalvoDTO objPeticion) {
+	public Mono<RespuestaPazYSalvoDTO> orquestarServiciosAsincronicamente(
+			@RequestBody PeticionPazYSalvoDTO objPeticion) {
 		Mono<RespuestaPazYSalvoDTO> objResultado = this.objFachada.consultarPazYSalvoAsincrono(objPeticion);
 		return objResultado;
 	}
-	
+
+	@PostMapping("/eliminarDeudasLaboratorio")
+	public ResponseEntity<String> eliminarLaboratorio(@RequestBody PeticionPazYSalvoDTO peticion) {
+		objFachada.eliminarDeudasLaboratorio(peticion);
+		return ResponseEntity.ok("Deudas de laboratorio eliminadas exitosamente.");
+	}
+
+	@PostMapping("/eliminarDeudasDeportes")
+	public ResponseEntity<String> eliminarDeportes(@RequestBody PeticionPazYSalvoDTO peticion) {
+		objFachada.eliminarDeudasDeportes(peticion);
+		return ResponseEntity.ok("Deudas de deportes eliminadas exitosamente.");
+	}
+
+	@PostMapping("/eliminarDeudasFinanciera")
+	public ResponseEntity<String> eliminarFinanciera(@RequestBody PeticionPazYSalvoDTO peticion) {
+		objFachada.eliminarDeudasFinanciera(peticion);
+		return ResponseEntity.ok("Deudas de financiera eliminadas exitosamente.");
+	}
+
 }
