@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -19,6 +20,7 @@
   <!-- Lógica -->
   <script defer src="funciones.js"></script>
 </head>
+
 <body>
   <div class="container main-container text-center">
     <img src="imagenes/favicon.png" alt="Logo Universidad del Cauca" class="logo-unicauca mb-3">
@@ -32,8 +34,13 @@
         <div class="card card-custom">
           <div class="card-body">
             <h5 class="card-title"><i class="fas fa-microscope"></i> Laboratorio</h5>
-            <button class="btn btn-primary w-100 mb-3" onclick="conectarAdministrador('laboratorio')">
+            <button id="btnConectar-laboratorio" class="btn btn-primary w-100 mb-2"
+              onclick="conectarAdministrador('laboratorio')">
               Conectar <i class="fas fa-plug ms-1"></i>
+            </button>
+            <button id="btnDesconectar-laboratorio" class="btn btn-danger w-100 mb-3"
+              onclick="desconectarAdministrador('laboratorio')" disabled>
+              Desconectar <i class="fas fa-xmark ms-1"></i>
             </button>
             <div id="deudas-laboratorio" class="text-start"></div>
           </div>
@@ -45,8 +52,13 @@
         <div class="card card-custom">
           <div class="card-body">
             <h5 class="card-title"><i class="fas fa-coins"></i> Financiera</h5>
-            <button class="btn btn-primary w-100 mb-3" onclick="conectarAdministrador('financiera')">
+            <button id="btnConectar-financiera" class="btn btn-primary w-100 mb-2"
+              onclick="conectarAdministrador('financiera')">
               Conectar <i class="fas fa-plug ms-1"></i>
+            </button>
+            <button id="btnDesconectar-financiera" class="btn btn-danger w-100 mb-3"
+              onclick="desconectarAdministrador('financiera')" disabled>
+              Desconectar <i class="fas fa-xmark ms-1"></i>
             </button>
             <div id="deudas-financiera" class="text-start"></div>
           </div>
@@ -58,8 +70,13 @@
         <div class="card card-custom">
           <div class="card-body">
             <h5 class="card-title"><i class="fas fa-futbol"></i> Deportes</h5>
-            <button class="btn btn-primary w-100 mb-3" onclick="conectarAdministrador('deportes')">
+            <button id="btnConectar-deportes" class="btn btn-primary w-100 mb-2"
+              onclick="conectarAdministrador('deportes')">
               Conectar <i class="fas fa-plug ms-1"></i>
+            </button>
+            <button id="btnDesconectar-deportes" class="btn btn-danger w-100 mb-3"
+              onclick="desconectarAdministrador('deportes')" disabled>
+              Desconectar <i class="fas fa-xmark ms-1"></i>
             </button>
             <div id="deudas-deportes" class="text-start"></div>
           </div>
@@ -68,4 +85,5 @@
     </div>
   </div>
 </body>
+
 </html>

@@ -23,9 +23,9 @@ public class GenerarPazYSalvoImpl implements GenerarPazYSalvoInt {
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
-    private final String LABORATORIO_URL = "http://localhost:5001/api/laboratorio";
-    private final String FINANCIERA_URL = "http://localhost:5002/api/financiera";
-    private final String DEPORTES_URL = "http://localhost:5003/api/deportes";
+    private final String LABORATORIO_URL = "http://localhost:5001/api/laboratorio/consultar";
+    private final String FINANCIERA_URL = "http://localhost:5003/api/deudas";
+    private final String DEPORTES_URL = "http://localhost:5008/api/deportes";
 
     @Override
     public RespuestaPazYSalvoDTO consultarPazYSalvo(PeticionPazYSalvoDTO peticion) {
