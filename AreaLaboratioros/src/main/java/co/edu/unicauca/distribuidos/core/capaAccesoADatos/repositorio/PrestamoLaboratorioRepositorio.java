@@ -16,14 +16,14 @@ public class PrestamoLaboratorioRepositorio {
 
     public PrestamoLaboratorioRepositorio() {
                 prestamos.add(new prestamoLaboratorio(
-                "1234", "Andrés Sánchez", "Microscopio", "vencido",
-                LocalDate.of(2024, 5, 1),
+                "202012345", "Andrés Sánchez", "Microscopio", "vencido",
+                LocalDate.of(2024, 8, 30),
                 LocalDate.of(2024, 5, 10),
                 null
                 ));
 
                 prestamos.add(new prestamoLaboratorio(
-                "1234", "Andrés Sánchez", "Computador", "activo",
+                "202012345", "Andrés Sánchez", "Computador", "activo",
                 LocalDate.of(2024, 6, 1),
                 LocalDate.of(2024, 6, 7),
                 null
