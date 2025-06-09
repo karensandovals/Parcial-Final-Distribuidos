@@ -1,8 +1,6 @@
 let stompClient = null;
-let intentos = 0;
 let recibido = false;
 let codigoActual = null;
-let timeoutId = null;
 
 function conectarWebSocket(codigoEstudiante) {
   const socket = new SockJS("http://localhost:5004/ws");
@@ -13,7 +11,6 @@ function conectarWebSocket(codigoEstudiante) {
 
     stompClient.subscribe(`/notificacion/estudiante/${codigoEstudiante}`, (mensaje) => {
       recibido = true;
-      clearTimeout(timeoutId);
       mostrarResultado(JSON.parse(mensaje.body));
     });
   });
@@ -28,7 +25,6 @@ function consultarPazYSalvo() {
 
   codigoActual = codigoEstudiante;
   recibido = false;
-  intentos = 0;
 
   if (!stompClient || !stompClient.connected) {
     conectarWebSocket(codigoEstudiante);
@@ -38,8 +34,6 @@ function consultarPazYSalvo() {
 }
 
 function hacerPeticion(codigo) {
-  intentos++;
-
   fetch("http://localhost:5004/api/orquestadorSincrono", {
     method: "POST",
     headers: {
@@ -50,23 +44,12 @@ function hacerPeticion(codigo) {
     .then(response => response.json())
     .then(data => {
       console.log("Petición enviada. Esperando respuesta...");
-      iniciarTimeout();
+      // No hay reintentos ni timeout aquí
     })
     .catch(error => {
       console.error("Error al enviar petición:", error);
       mostrarError("Error al enviar la petición.");
     });
-}
-
-function iniciarTimeout() {
-  timeoutId = setTimeout(() => {
-    if (!recibido && intentos < 3) {
-      console.warn(`No se recibió respuesta. Reintentando (${intentos}/3)...`);
-      hacerPeticion(codigoActual);
-    } else if (!recibido) {
-      mostrarError("No se obtuvo respuesta tras 3 intentos.");
-    }
-  }, 5000); // Esperar 5 segundos antes de decidir si se reintenta
 }
 
 function mostrarResultado(respuesta) {
@@ -88,15 +71,15 @@ function mostrarResultado(respuesta) {
     }
   };
 
-  renderLista("Financiera", respuesta.objFinanciera, item => 
+  renderLista("Financiera", respuesta.objFinanciera, item =>
     `Debe $${item.montoAdeudado} por concepto de ${item.motivoDeuda}`
   );
 
-  renderLista("Laboratorio", respuesta.objLaboratorio, item => 
+  renderLista("Laboratorio", respuesta.objLaboratorio, item =>
     `Tiene pendiente el laboratorio: ${item.equipoPrestado}`
   );
 
-  renderLista("Deportes", respuesta.objDeportes, item => 
+  renderLista("Deportes", respuesta.objDeportes, item =>
     `Debe devolver el implemento: ${item.nombreElemento}`
   );
 
