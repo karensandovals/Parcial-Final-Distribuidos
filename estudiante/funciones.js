@@ -2,7 +2,7 @@ let stompClient = null;
 let recibido = false;
 let codigoActual = null;
 
-function conectarWebSocket(codigoEstudiante) {
+function conectarWebSocket(codigoEstudiante, callback) {
   const socket = new SockJS("http://localhost:5004/ws");
   stompClient = Stomp.over(socket);
 
@@ -10,9 +10,11 @@ function conectarWebSocket(codigoEstudiante) {
     console.log("Conectado al WebSocket como estudiante");
 
     stompClient.subscribe(`/notificacion/estudiante/${codigoEstudiante}`, (mensaje) => {
+      console.log("🔔 Mensaje recibido en canal estudiante:", mensaje.body);
       recibido = true;
       mostrarResultado(JSON.parse(mensaje.body));
     });
+    if(callback) callback();
   });
 }
 
@@ -27,10 +29,14 @@ function consultarPazYSalvo() {
   recibido = false;
 
   if (!stompClient || !stompClient.connected) {
-    conectarWebSocket(codigoEstudiante);
+    conectarWebSocket(codigoEstudiante, () => {
+      hacerPeticion(codigoEstudiante);
+    });
+  }else{
+    hacerPeticion(codigoEstudiante);
   }
 
-  hacerPeticion(codigoEstudiante);
+  
 }
 
 function hacerPeticion(codigo) {
@@ -41,16 +47,25 @@ function hacerPeticion(codigo) {
     },
     body: JSON.stringify({ codigoEstudiante: codigo })
   })
-    .then(response => response.json())
-    .then(data => {
-      console.log("Petición enviada. Esperando respuesta...");
-      // No hay reintentos ni timeout aquí
+    .then(response => {
+      console.log("Código de respuesta:", response.status);
+      console.log("Tipo de contenido:", response.headers.get("content-type"));
+      return response.text();  // usar text() para ver si es un JSON válido
+    })
+    .then(text => {
+      console.log("Texto recibido:", text);
+      try {
+        const data = JSON.parse(text);
+        console.log("Objeto JSON:", data);
+      } catch (e) {
+        console.error("Respuesta no es JSON válido:", e);
+      }
     })
     .catch(error => {
       console.error("Error al enviar petición:", error);
-      mostrarError("Error al enviar la petición.");
     });
 }
+
 
 function mostrarResultado(respuesta) {
   const contenedor = document.getElementById("resultado");

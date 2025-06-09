@@ -23,11 +23,11 @@ public class GenerarPazYSalvoImpl implements GenerarPazYSalvoInt {
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
-    private final String LABORATORIO_URL = "http://localhost:5001/api/laboratorio/consultar";
+    private final String LABORATORIO_URL = "http://localhost:2020/api/laboratorio/consultar";
     private final String FINANCIERA_URL = "http://localhost:5003/api/deudas";
     private final String DEPORTES_URL = "http://localhost:5008/api/deportes";
 
-    private final String ELIMINAR_LABORATORIO_URL = "http://localhost:5001/api/laboratorio/eliminar";
+    private final String ELIMINAR_LABORATORIO_URL = "http://localhost:2020/api/laboratorio/eliminar";
     private final String ELIMINAR_FINANCIERA_URL = "http://localhost:5003/api/deudas/";
     private final String ELIMINAR_DEPORTES_URL = "http://localhost:5008/api/deportes/";
 
