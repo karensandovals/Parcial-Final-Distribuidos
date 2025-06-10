@@ -7,4 +7,5 @@ import lombok.Data;
 @AllArgsConstructor
 public class PeticionPrestamoDTO {
 	private String codigoEstudiante;
+	private String nombresEstudiante; 
 }

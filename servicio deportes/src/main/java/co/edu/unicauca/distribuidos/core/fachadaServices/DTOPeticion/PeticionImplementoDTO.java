@@ -9,4 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PeticionImplementoDTO {
     private String codigoEstudiante;
+    private String nombresEstudiante; 
 }
