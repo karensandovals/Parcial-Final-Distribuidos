@@ -15,8 +15,8 @@ public class DeudaMapper {
                 deuda.getNombresEstudiante(),
                 deuda.getMonto(),
                 deuda.getMotivo(),
-                localDateToDate(deuda.getFechaGeneracion()),
-                localDateToDate(deuda.getFechaLimite()),
+                deuda.getFechaGeneracion(),
+                deuda.getFechaLimite(),
                 deuda.getEstado()
         );
     }

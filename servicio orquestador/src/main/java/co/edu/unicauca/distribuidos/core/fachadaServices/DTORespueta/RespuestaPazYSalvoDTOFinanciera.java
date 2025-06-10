@@ -1,6 +1,6 @@
 package co.edu.unicauca.distribuidos.core.fachadaServices.DTORespueta;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,7 +14,7 @@ public class RespuestaPazYSalvoDTOFinanciera {
     private String nombresEstudiante;
     private double montoAdeudado;
     private String motivoDeuda;
-    private Date fechaGeneracionDeuda;
-    private Date fechaLimitePago;
+    private LocalDate fechaGeneracionDeuda;
+    private LocalDate fechaLimitePago;
     private String estadoDeuda; // pendiente, pagada, en mora
 }

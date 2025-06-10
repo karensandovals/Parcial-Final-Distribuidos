@@ -1,8 +1,8 @@
 package co.edu.unicauca.distribuidos.core.capaAccesoADatos.repositorios;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -21,14 +21,14 @@ public class ImplementoRepository {
         this.implementosPorEstudiante = new HashMap<>();
         this.nombresPorCodigo = new HashMap<>();
 
-        // Juan Pérez
+        // Juan Pérez  
         List<ImplementoDeportivo> implementosJuan = new ArrayList<>();
-        implementosJuan.add(new ImplementoDeportivo("202012345", "Andrés Sánchez","Balón", "2024-08-01", "2024-08-10", null));
-        implementosJuan.add(new ImplementoDeportivo("202012345","Andrés Sánchez", "Raqueta", "2024-08-05", "2024-08-15", null));
+        implementosJuan.add(new ImplementoDeportivo("202012345", "Andrés Sánchez", LocalDate.of(2024, 8, 1), LocalDate.of(2025, 8, 10), null, "Balón"));
+        implementosJuan.add(new ImplementoDeportivo("202012345","Andrés Sánchez",  LocalDate.of(2024, 8, 5), LocalDate.of(2025, 8, 15), null, "Raqueta"));
 
         // Ana Gómez
         List<ImplementoDeportivo> implementosAna = new ArrayList<>();
-        implementosAna.add(new ImplementoDeportivo("202087654", "Ana Gómez", "Uniforme", "2025-01-12", "2025-01-20", null));
+        implementosAna.add(new ImplementoDeportivo("202087654", "Ana Gómez",  LocalDate.of(2024, 1, 12), LocalDate.of(2025, 1, 20), null, "Uniforme"));
 
         this.implementosPorEstudiante.put("202012345", implementosJuan);
         this.implementosPorEstudiante.put("202087654", implementosAna);

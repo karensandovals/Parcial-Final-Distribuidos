@@ -20,38 +20,24 @@ public class DeportesServiceImpl implements DeportesServiceInt {
     @Autowired
     private ImplementoRepository implementoRepository;
 
-    private Date parseFecha(String fechaTexto) {
-    if (fechaTexto == null || fechaTexto.trim().isEmpty()) {
-        return null;
-    }
-    try {
-        return new SimpleDateFormat("yyyy-MM-dd").parse(fechaTexto);
-    } catch (ParseException e) {
-        return null;
-    }
-}
-
-
     @Override
-public List<RespuestaPazYSalvoDTODeportes> crearImplemento(PeticionImplementoDTO objPeticion) {
-    String codigo = objPeticion.getCodigoEstudiante();
-    List<ImplementoDeportivo> pendientes = implementoRepository.buscarPorCodigo(codigo);
-    List<RespuestaPazYSalvoDTODeportes> respuesta = new ArrayList<>();
+    public List<RespuestaPazYSalvoDTODeportes> crearImplemento(PeticionImplementoDTO objPeticion) {
+        String codigo = objPeticion.getCodigoEstudiante();
+        List<ImplementoDeportivo> pendientes = implementoRepository.buscarPorCodigo(codigo);
+        List<RespuestaPazYSalvoDTODeportes> respuesta = new ArrayList<>();
 
-    for (ImplementoDeportivo imp : pendientes) {
-        respuesta.add(new RespuestaPazYSalvoDTODeportes(
-            imp.getCodigoEstudiante(),
-            imp.getNombresEstudiante(),
-            parseFecha(imp.getFechaPrestamo()),
-            parseFecha(imp.getFechaDevolucionEstimada()),
-            parseFecha(imp.getFechaDevolucionReal()),
-            imp.getNombreImplemento()
-        ));
+        for (ImplementoDeportivo imp : pendientes) {
+            respuesta.add(new RespuestaPazYSalvoDTODeportes(
+                    imp.getCodigoEstudiante(),
+                    imp.getNombresEstudiante(),
+                    imp.getFechaPrestamo(),
+                    imp.getFechaDevolucionEstimada(),
+                    imp.getFechaDevolucionReal(),
+                    imp.getImplementoDeportivoPrestado()));
+        }
+
+        return respuesta;
     }
-
-    return respuesta;
-}
-
 
     @Override
     public boolean eliminarImplemento(String codigoEstudiante) {

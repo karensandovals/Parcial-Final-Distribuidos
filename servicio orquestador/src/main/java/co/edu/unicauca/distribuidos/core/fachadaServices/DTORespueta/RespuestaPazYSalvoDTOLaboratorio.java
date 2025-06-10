@@ -1,7 +1,6 @@
 package co.edu.unicauca.distribuidos.core.fachadaServices.DTORespueta;
 
-
-import java.util.Date;
+import java.time.LocalDate;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,9 +12,9 @@ import lombok.NoArgsConstructor;
 public class RespuestaPazYSalvoDTOLaboratorio {
     private String codigoEstudiante;
     private String nombresEstudiante;
-    private Date fechaPrestamo;
-    private Date fechaDevolucionEstimada;
-    private Date fechaDevolucionReal;
+    private LocalDate fechaPrestamo;
+    private LocalDate fechaDevolucionEstimada;
+    private LocalDate fechaDevolucionReal;
     private String estadoPrestamo; // activo, devuelto, vencido
     private String equipoPrestado;
 }
