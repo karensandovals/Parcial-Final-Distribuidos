@@ -15,5 +15,5 @@ public class RespuestaPazYSalvoDTODeportes {
     private LocalDate fechaPrestamo;
     private LocalDate fechaDevolucionEstimada;
     private LocalDate fechaDevolucionReal;  
-    private String nombreImplemento; 
+    private String implementoDeportivoPrestado; 
 }

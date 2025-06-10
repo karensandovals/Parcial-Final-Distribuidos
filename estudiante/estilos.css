@@ -67,3 +67,32 @@ body {
   background-color: #f9f9f9;
   border-radius: 8px;
 }
+
+/* Ajuste de input y botón */
+.input-group input {
+  font-size: 0.9rem;
+  padding: 0.5rem 0.75rem;
+}
+
+/* Botones más compactos y con bordes suaves */
+.btn {
+  font-size: 0.9rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+}
+
+/* Título más pequeño y espaciado más ajustado */
+.titulo-institucional {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.lead {
+  font-size: 1rem;
+  margin-bottom: 20px;
+}
+
+/* Logo más pequeño si deseas */
+.logo-unicauca {
+  height: 70px;
+}
