@@ -18,7 +18,7 @@ function conectarWebSocket(codigoEstudiante, callback) {
   });
 }
 
-function consultarPazYSalvo() {
+function consultar(esAsincrono = false) {
   const codigoEstudiante = document.getElementById("codigoEstudiante").value.trim();
   if (!codigoEstudiante) {
     alert("Ingrese un código de estudiante.");
@@ -28,43 +28,46 @@ function consultarPazYSalvo() {
   codigoActual = codigoEstudiante;
   recibido = false;
 
-  if (!stompClient || !stompClient.connected) {
-    conectarWebSocket(codigoEstudiante, () => {
-      hacerPeticion(codigoEstudiante);
-    });
-  }else{
-    hacerPeticion(codigoEstudiante);
+  if (esAsincrono) {
+    // Conexión WebSocket antes de enviar petición
+    if (!stompClient || !stompClient.connected) {
+      conectarWebSocket(codigoEstudiante, () => {
+        hacerPeticion(codigoEstudiante, true);
+      });
+    } else {
+      hacerPeticion(codigoEstudiante, true);
+    }
+  } else {
+    hacerPeticion(codigoEstudiante, false);
   }
-
-  
 }
 
-function hacerPeticion(codigo) {
-  fetch("http://localhost:5004/api/orquestadorSincrono", {
+function hacerPeticion(codigo, esAsincrono = false) {
+  const url = esAsincrono
+    ? "http://localhost:5004/api/orquestadorAsincrono"
+    : "http://localhost:5004/api/orquestadorSincrono";
+
+  fetch(url, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ codigoEstudiante: codigo })
   })
     .then(response => {
-      console.log("Código de respuesta:", response.status);
-      console.log("Tipo de contenido:", response.headers.get("content-type"));
-      return response.text();  // usar text() para ver si es un JSON válido
+      return esAsincrono ? response.text() : response.json();
     })
-    .then(text => {
-      console.log("Texto recibido:", text);
-      try {
-        const data = JSON.parse(text);
-        console.log("Objeto JSON:", data);
-      } catch (e) {
-        console.error("Respuesta no es JSON válido:", e);
+    .then(data => {
+      if (!esAsincrono) {
+        mostrarResultado(data); // solo mostramos de inmediato si es síncrono
+      } else {
+        console.log("Petición asincrónica enviada, esperando respuesta por WebSocket...");
       }
     })
     .catch(error => {
       console.error("Error al enviar petición:", error);
+      mostrarError("Error al enviar la petición.");
     });
 }
+
 
 
 function mostrarResultado(respuesta) {
