@@ -23,33 +23,49 @@ public class AdminWebSocketTracker implements ApplicationListener<ApplicationEve
         if (event instanceof SessionConnectEvent) {
             String sessionId = (String) ((SessionConnectEvent) event).getMessage().getHeaders().get("simpSessionId");
             sesionesConectadas.add(sessionId);
+            System.out.println("✅ Conectado: " + sessionId);
+
         } else if (event instanceof SessionDisconnectEvent) {
             String sessionId = ((SessionDisconnectEvent) event).getSessionId();
             sesionesConectadas.remove(sessionId);
-            // Eliminar suscripciones asociadas
             topicSubscriptions.values().forEach(set -> set.remove(sessionId));
+            System.out.println("🔌 Desconectado: " + sessionId);
+
         } else if (event instanceof SessionSubscribeEvent) {
             SessionSubscribeEvent subscribeEvent = (SessionSubscribeEvent) event;
             String sessionId = (String) subscribeEvent.getMessage().getHeaders().get("simpSessionId");
             String destination = (String) subscribeEvent.getMessage().getHeaders().get("simpDestination");
 
             topicSubscriptions.computeIfAbsent(destination, k -> ConcurrentHashMap.newKeySet()).add(sessionId);
+            System.out.println("📌 Subscrito " + sessionId + " a " + destination);
+
         } else if (event instanceof SessionUnsubscribeEvent) {
             SessionUnsubscribeEvent unsubscribeEvent = (SessionUnsubscribeEvent) event;
             String sessionId = (String) unsubscribeEvent.getMessage().getHeaders().get("simpSessionId");
-            // Podrías remover el sessionId de todos los topics si lo deseas
+
             topicSubscriptions.values().forEach(set -> set.remove(sessionId));
+            System.out.println("❌ Unsubscrito: " + sessionId);
         }
     }
 
     public boolean estanTodosLosAdministradoresConectados() {
-        return tieneSuscriptor("/notificacion/laboratorio")
-                && tieneSuscriptor("/notificacion/financiera")
-                && tieneSuscriptor("/notificacion/deportes");
+        return tieneSuscriptor("/notificacion/laboratorio") &&
+               tieneSuscriptor("/notificacion/financiera") &&
+               tieneSuscriptor("/notificacion/deportes");
     }
 
     private boolean tieneSuscriptor(String topic) {
-        return topicSubscriptions.getOrDefault(topic, Set.of()).size() > 0;
+        Set<String> suscriptores = topicSubscriptions.getOrDefault(topic, Set.of());
+        return !suscriptores.isEmpty();
+    }
+
+    // Métodos adicionales útiles para pruebas y logs
+    public Map<String, Set<String>> getTopicSubscriptions() {
+        return topicSubscriptions;
+    }
+
+    public Set<String> getSesionesConectadas() {
+        return sesionesConectadas;
     }
 }
 

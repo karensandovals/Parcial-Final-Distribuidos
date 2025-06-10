@@ -32,7 +32,8 @@ function desconectarArea() {
       document.getElementById('btnDesconectar').disabled = true;
       document.getElementById('deudas').innerHTML = '';
       document.getElementById('btnEliminarDeudas').disabled = true; // Deshabilita 
-    });
+      stompClient = null;
+    }, {});
   }
 }
 
