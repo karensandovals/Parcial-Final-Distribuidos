@@ -38,27 +38,90 @@ function desconectarArea() {
 
 function mostrarDeudas(data) {
   const contenedor = document.getElementById('deudas');
+  const botonEliminar = document.getElementById('btnEliminarDeudas');
   contenedor.innerHTML = '';
 
   if (!data || data.length === 0) {
-    contenedor.innerHTML = '<p>El estudiante está a paz y salvo.</p>';
+    contenedor.innerHTML = `
+      <div class="alert alert-success" role="alert">
+        ✅ El estudiante está <strong>a paz y salvo</strong> con el área de <strong>${areaSeleccionada}</strong>.
+      </div>
+    `;
+    botonEliminar.style.display = 'none';
+    ultimoCodigoEstudiante = null;
     return;
   }
 
-  // Guardar el último código recibido (tomamos el del primer elemento)
   ultimoCodigoEstudiante = data[0].codigoEstudiante;
 
+  contenedor.innerHTML = `
+    <div class="alert alert-danger" role="alert">
+      ⚠️ El estudiante tiene pendientes con el área de <strong>${areaSeleccionada}</strong>.
+    </div>
+  `;
+
+  let tabla = `
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped table-sm align-middle">
+        <thead class="table-dark">
+          <tr>
+            <th>Código</th>
+            ${areaSeleccionada === 'financiera' ? `
+              <th>Monto Adeudado</th>
+              <th>Motivo</th>
+              <th>Fecha Generación</th>
+              <th>Fecha Límite</th>
+              <th>Estado</th>
+            ` : areaSeleccionada === 'laboratorio' ? `
+              <th>Equipo Prestado</th>
+              <th>Estado</th>
+              <th>Fecha Préstamo</th>
+              <th>Fecha Estimada</th>
+              <th>Fecha Real</th>
+            ` : `
+              <th>Implemento</th>
+              <th>Fecha Préstamo</th>
+              <th>Fecha Estimada</th>
+              <th>Fecha Real</th>
+            `}
+          </tr>
+        </thead>
+        <tbody>
+  `;
+
   data.forEach(item => {
-    const p = document.createElement('p');
+    tabla += "<tr>";
+    tabla += `<td>${item.codigoEstudiante}</td>`;
     if (areaSeleccionada === 'financiera') {
-      p.textContent = `Estudiante ${item.codigoEstudiante} debe $${item.montoAdeudado} por ${item.motivoDeuda}.`;
+      tabla += `
+        <td>$${item.montoAdeudado}</td>
+        <td>${item.motivoDeuda}</td>
+        <td>${item.fechaGeneracionDeuda}</td>
+        <td>${item.fechaLimitePago}</td>
+        <td>${item.estadoDeuda}</td>
+      `;
     } else if (areaSeleccionada === 'laboratorio') {
-      p.textContent = `Estudiante ${item.codigoEstudiante} debe devolver: ${item.equipoPrestado}.`;
-    } else if (areaSeleccionada === 'deportes') {
-      p.textContent = `Estudiante ${item.codigoEstudiante} debe el implemento: ${item.implementoDeportivoPrestado}.`;
+      tabla += `
+        <td>${item.equipoPrestado}</td>
+        <td>${item.estadoPrestamo}</td>
+        <td>${item.fechaPrestamo}</td>
+        <td>${item.fechaDevolucionEstimada}</td>
+        <td>${item.fechaDevolucionReal ?? "—"}</td>
+      `;
+    } else {
+      tabla += `
+        <td>${item.implementoDeportivoPrestado}</td>
+        <td>${item.fechaPrestamo}</td>
+        <td>${item.fechaDevolucionEstimada}</td>
+        <td>${item.fechaDevolucionReal ?? "—"}</td>
+      `;
     }
-    contenedor.appendChild(p);
+    tabla += "</tr>";
   });
+
+  tabla += "</tbody></table></div>";
+  contenedor.innerHTML += tabla;
+  botonEliminar.style.display = 'inline-block';
 }
 
 function eliminarDeudas() {
@@ -118,9 +181,12 @@ function eliminarDeudas() {
 
 function mostrarMensaje(msg) {
   const contenedor = document.getElementById('mensajes');
-  const p = document.createElement('p');
-  p.textContent = msg;
-  p.classList.add('fw-bold', 'text-info');
-  contenedor.appendChild(p);
+  contenedor.innerHTML = `
+    <div class="alert alert-info d-flex align-items-center" role="alert">
+      <i class="fa-solid fa-circle-info me-2"></i>
+      <div><strong>Notificación:</strong> ${msg}</div>
+    </div>
+  `;
 }
+
 

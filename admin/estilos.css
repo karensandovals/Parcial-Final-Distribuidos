@@ -12,32 +12,57 @@ body {
   padding-bottom: 60px;
 }
 
-/* Estilo del logo institucional */
+/* Logo más compacto y adaptable */
 .logo-unicauca {
-  height: 100px;
-  filter: brightness(0) invert(1); /* Para logos blancos o azules oscuros */
+  height: 70px;
+  filter: brightness(0) invert(1);
 }
 
-/* Títulos con color Unicauca */
+/* Título institucional estilizado */
 .titulo-institucional {
   color: #ffffff;
   font-weight: bold;
-  margin-bottom: 0;
+  font-size: 1.5rem;
+  margin-bottom: 10px;
 }
 
-/* Tarjeta principal */
-.card-custom {
-  border-radius: 16px;
-  border: none;
-  background-color: #ffffff;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
-  color: #212529;
+/* Subtítulo */
+.lead {
+  font-size: 1rem;
+  margin-bottom: 20px;
 }
 
-/* Área de resultado con separación */
+/* Área de resultado reutilizable */
 .result-area {
-  border-top: 1px solid #dee2e6;
-  padding-top: 20px;
+  background-color: #ffffff;
+  color: #212529;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  border: 1px solid #ccc;
+}
+
+/* Estilo para mensajes y deudas */
+#mensajes, #deudas {
+  min-height: 120px;
+  background-color: #f0f4f8;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+/* Botones compactos y consistentes */
+.btn {
+  font-size: 0.9rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+}
+
+/* Select compacto */
+.form-select-sm {
+  font-size: 0.9rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
 }
 
 /* Resultado positivo */
@@ -64,11 +89,4 @@ body {
 /* Ocultar con Bootstrap */
 .d-none {
   display: none !important;
-}
-
-#mensajes, #deudas {
-  min-height: 120px;
-  background-color: #f0f4f8;
-  padding: 10px;
-  border-radius: 8px;
 }

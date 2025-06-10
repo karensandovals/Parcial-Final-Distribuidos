@@ -73,7 +73,7 @@ function hacerPeticion(codigo, esAsincrono = false) {
       if (!esAsincrono) {
         mostrarResultado(data); // solo mostramos de inmediato si es síncrono
       } else {
-        console.log("Petición asincrónica enviada, esperando respuesta por WebSocket...");
+        console.log("Petición asíncrona enviada, esperando respuesta por WebSocket...");
       }
     })
     .catch(error => {

@@ -22,33 +22,34 @@
 </head>
 
 <body>
-  <div class="container text-center main-container">
+  <div class="container main-container text-center">
     <img src="imagenes/favicon.png" class="logo-unicauca mb-3" alt="Logo Universidad del Cauca">
     <h1 class="titulo-institucional">Panel de Administración - Paz y Salvo</h1>
     <p class="lead">Seleccione un área y conéctese para recibir notificaciones en tiempo real.</p>
 
-    <div class="row justify-content-center mb-3">
+    <div class="row justify-content-center mb-4">
       <div class="col-md-6 d-flex gap-2">
-        <select id="selectArea" class="form-select">
+        <select id="selectArea" class="form-select form-select-sm">
+          <option value="" disabled selected>Seleccione un área</option>
           <option value="laboratorio">Laboratorio</option>
           <option value="financiera">Financiera</option>
           <option value="deportes">Deportes</option>
         </select>
-        <button id="btnConectar" class="btn btn-success" onclick="conectarArea()">Conectar</button>
-        <button id="btnDesconectar" class="btn btn-danger" onclick="desconectarArea()" disabled>Desconectar</button>
+        <button id="btnConectar" class="btn btn-outline-success btn-sm" onclick="conectarArea()">Conectar</button>
+        <button id="btnDesconectar" class="btn btn-outline-danger btn-sm" onclick="desconectarArea()" disabled>Desconectar</button>
       </div>
     </div>
 
     <div class="row justify-content-center">
       <div class="col-md-8">
-        <div class="card card-custom p-3 text-start">
+        <div class="result-area text-start">
           <h5 class="mb-3">Mensajes del sistema</h5>
           <div id="mensajes" class="mb-4"></div>
-          <h5 class="mb-3">Deudas del estudiante</h5>
+          <h5 class="mb-3">Pendientes del estudiante</h5>
           <div id="deudas"></div>
           <div class="text-center mt-3">
-            <button id="btnEliminarDeudas" class="btn btn-warning" onclick="eliminarDeudas()" disabled>
-              <i class="fa-solid fa-trash"></i> Eliminar Deudas
+            <button id="btnEliminarDeudas" class="btn btn-warning btn-sm" onclick="eliminarDeudas()" disabled style="display:none">
+              <i class="fa-solid fa-trash"></i> Eliminar Pendientes
             </button>
           </div>
         </div>
@@ -56,5 +57,6 @@
     </div>
   </div>
 </body>
+
 
 </html>

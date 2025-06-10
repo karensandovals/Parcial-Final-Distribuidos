@@ -122,7 +122,7 @@ public class GenerarPazYSalvoImpl implements GenerarPazYSalvoInt {
                     respuesta.setObjLaboratorio(tuple.getT1());
                     respuesta.setObjFinanciera(tuple.getT2());
                     respuesta.setObjDeportes(tuple.getT3());
-                    respuesta.setMensaje("Consulta asincrónica exitosa.");
+                    respuesta.setMensaje("Consulta asíncrona exitosa.");
 
                     // Notificar a administradores
                     notificarAdministradores(peticion.getCodigoEstudiante(), peticion.getNombresEstudiante());
@@ -134,7 +134,7 @@ public class GenerarPazYSalvoImpl implements GenerarPazYSalvoInt {
                 .onErrorResume(e -> {
                     RespuestaPazYSalvoDTO respuesta = new RespuestaPazYSalvoDTO();
                     respuesta.setCodigoEstudiante(peticion.getCodigoEstudiante());
-                    respuesta.setMensaje("Error en la consulta asincrónica: " + e.getMessage());
+                    respuesta.setMensaje("Error en la consulta asíncrona: " + e.getMessage());
                     return Mono.just(respuesta);
                 });
     }
