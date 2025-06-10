@@ -4,6 +4,7 @@ package co.edu.unicauca.distribuidos.core.capaControladores;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,19 +36,20 @@ public class PazYSalvoRestController {
 		return objResultado;
 	}
 
-	@PostMapping("/eliminarDeudasLaboratorio")
+	@DeleteMapping("/eliminarDeudasLaboratorio")
 	public ResponseEntity<String> eliminarLaboratorio(@RequestBody PeticionPazYSalvoDTO peticion) {
 		objFachada.eliminarDeudasLaboratorio(peticion);
+		System.out.println("Eliminando deudas de laboratorio ");
 		return ResponseEntity.ok("Deudas de laboratorio eliminadas exitosamente.");
 	}
 
-	@PostMapping("/eliminarDeudasDeportes")
+	@DeleteMapping("/eliminarDeudasDeportes")
 	public ResponseEntity<String> eliminarDeportes(@RequestBody PeticionPazYSalvoDTO peticion) {
 		objFachada.eliminarDeudasDeportes(peticion);
 		return ResponseEntity.ok("Deudas de deportes eliminadas exitosamente.");
 	}
 
-	@PostMapping("/eliminarDeudasFinanciera")
+	@DeleteMapping("/eliminarDeudasFinanciera")
 	public ResponseEntity<String> eliminarFinanciera(@RequestBody PeticionPazYSalvoDTO peticion) {
 		objFachada.eliminarDeudasFinanciera(peticion);
 		return ResponseEntity.ok("Deudas de financiera eliminadas exitosamente.");

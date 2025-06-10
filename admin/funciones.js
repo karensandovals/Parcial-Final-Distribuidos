@@ -1,5 +1,7 @@
 let areaSeleccionada = null;
 let stompClient = null;
+let ultimoCodigoEstudiante = null;
+
 
 function conectarArea() {
   areaSeleccionada = document.getElementById('selectArea').value;
@@ -43,6 +45,9 @@ function mostrarDeudas(data) {
     return;
   }
 
+  // Guardar el último código recibido (tomamos el del primer elemento)
+  ultimoCodigoEstudiante = data[0].codigoEstudiante;
+
   data.forEach(item => {
     const p = document.createElement('p');
     if (areaSeleccionada === 'financiera') {
@@ -62,17 +67,13 @@ function eliminarDeudas() {
     return;
   }
 
-  const codigoEstudiante = prompt("Ingrese el código del estudiante:");
-  const nombresEstudiante = prompt("Ingrese el nombre completo del estudiante:");
-
-  if (!codigoEstudiante || !nombresEstudiante) {
-    alert("Debe ingresar ambos campos.");
+  if (!ultimoCodigoEstudiante) {
+    alert("No hay código de estudiante registrado. Espera a que llegue una notificación.");
     return;
   }
 
   const peticion = {
-    codigoEstudiante: codigoEstudiante,
-    nombresEstudiante: nombresEstudiante
+    codigoEstudiante: ultimoCodigoEstudiante
   };
 
   let endpoint = '';
@@ -92,7 +93,7 @@ function eliminarDeudas() {
   }
 
   fetch(`http://localhost:5004${endpoint}`, {
-    method: 'POST',
+    method: 'DELETE',
     headers: {
       'Content-Type': 'application/json'
     },
@@ -107,6 +108,7 @@ function eliminarDeudas() {
     .then(msg => {
       mostrarMensaje(msg);
       document.getElementById('deudas').innerHTML = '';
+      ultimoCodigoEstudiante = null; // Limpiar después de eliminar
     })
     .catch(error => {
       console.error(error);

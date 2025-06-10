@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>co.edu.unicauca.distribuidos</groupId>
-	<artifactId>proyecto_api_rest_cliente</artifactId>
+	<artifactId>servicio_financiera</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>proyecto_api_rest_cliente</name>
 	<description>Demo project for Spring Boot</description>

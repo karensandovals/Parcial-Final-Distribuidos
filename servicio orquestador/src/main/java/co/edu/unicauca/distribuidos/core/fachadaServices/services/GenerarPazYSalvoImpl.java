@@ -3,6 +3,7 @@ package co.edu.unicauca.distribuidos.core.fachadaServices.services;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -30,7 +31,6 @@ public class GenerarPazYSalvoImpl implements GenerarPazYSalvoInt {
     private final String ELIMINAR_LABORATORIO_URL = "http://localhost:2020/api/laboratorio/eliminar";
     private final String ELIMINAR_FINANCIERA_URL = "http://localhost:5003/api/deudas/";
     private final String ELIMINAR_DEPORTES_URL = "http://localhost:5008/api/deportes/";
-
 
     @Override
     public RespuestaPazYSalvoDTO consultarPazYSalvo(PeticionPazYSalvoDTO peticion) {
@@ -141,9 +141,9 @@ public class GenerarPazYSalvoImpl implements GenerarPazYSalvoInt {
 
     @Override
     public void eliminarDeudasLaboratorio(PeticionPazYSalvoDTO peticion) {
-        webClient.post()
+        webClient.method(HttpMethod.DELETE)
                 .uri(ELIMINAR_LABORATORIO_URL)
-                .bodyValue(peticion)
+                .body(Mono.just(peticion), PeticionPazYSalvoDTO.class)
                 .retrieve()
                 .bodyToMono(Void.class)
                 .block();
@@ -151,9 +151,8 @@ public class GenerarPazYSalvoImpl implements GenerarPazYSalvoInt {
 
     @Override
     public void eliminarDeudasFinanciera(PeticionPazYSalvoDTO peticion) {
-        webClient.post()
-                .uri(ELIMINAR_FINANCIERA_URL)
-                .bodyValue(peticion)
+        webClient.delete()
+                .uri(ELIMINAR_FINANCIERA_URL + peticion.getCodigoEstudiante())
                 .retrieve()
                 .bodyToMono(Void.class)
                 .block();
@@ -161,9 +160,8 @@ public class GenerarPazYSalvoImpl implements GenerarPazYSalvoInt {
 
     @Override
     public void eliminarDeudasDeportes(PeticionPazYSalvoDTO peticion) {
-        webClient.post()
-                .uri(ELIMINAR_DEPORTES_URL)
-                .bodyValue(peticion)
+        webClient.delete()
+                .uri(ELIMINAR_DEPORTES_URL + peticion.getCodigoEstudiante())
                 .retrieve()
                 .bodyToMono(Void.class)
                 .block();
