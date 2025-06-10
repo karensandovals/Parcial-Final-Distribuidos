@@ -66,10 +66,6 @@ function hacerPeticion(codigo, esAsincrono = false) {
   // Mostrar estado inicial
   estado.style.display = "block";
   estado.className = "alert alert-info mt-3";
-  estado.innerHTML = `
-    <div class="spinner-border spinner-border-sm" role="status"></div>
-    <span class="ms-2">Iniciando consulta ${esAsincrono ? 'asíncrona' : 'síncrona'}...</span>
-  `;
 
   const url = esAsincrono
     ? "http://localhost:5004/api/orquestadorAsincrono"
@@ -102,11 +98,8 @@ function hacerPeticion(codigo, esAsincrono = false) {
       } else {
         // Manejo respuesta asíncrona
         estado.className = "alert alert-warning mt-3";
-        estado.innerHTML = `
-          <div class="spinner-border spinner-border-sm" role="status"></div>
-          <span class="ms-2">Consulta asíncrona en progreso. Esperando notificación...</span>
-        `;
-        console.log("Petición asíncrona enviada, esperando respuesta por WebSocket...");
+        estado.innerHTML = `<i class="fas fa-check-circle"></i> Consulta asincrona completada`;
+        setTimeout(() => estado.style.display = "none", 2000);
       }
     })
     .catch(error => {

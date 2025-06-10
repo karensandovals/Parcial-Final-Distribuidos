@@ -10,6 +10,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import co.edu.unicauca.distribuidos.core.configuracion.AdminWebSocketTracker;
 import co.edu.unicauca.distribuidos.core.fachadaServices.DTOPeticion.PeticionPazYSalvoDTO;
 import co.edu.unicauca.distribuidos.core.fachadaServices.DTORespueta.RespuestaPazYSalvoDTO;
 import co.edu.unicauca.distribuidos.core.fachadaServices.DTORespueta.RespuestaPazYSalvoDTODeportes;
@@ -26,6 +27,9 @@ public class GenerarPazYSalvoImpl implements GenerarPazYSalvoInt {
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
+    @Autowired
+    private AdminWebSocketTracker tracker;
+
     private final String LABORATORIO_URL = "http://localhost:2020/api/laboratorio/consultar";
     private final String FINANCIERA_URL = "http://localhost:5003/api/deudas";
     private final String DEPORTES_URL = "http://localhost:5008/api/deportes";
@@ -41,6 +45,14 @@ public class GenerarPazYSalvoImpl implements GenerarPazYSalvoInt {
 
     @Override
     public RespuestaPazYSalvoDTO consultarPazYSalvo(PeticionPazYSalvoDTO peticion) {
+
+        if (!tracker.hayAdministradorConectado()) {
+            RespuestaPazYSalvoDTO error = new RespuestaPazYSalvoDTO();
+            error.setCodigoEstudiante(peticion.getCodigoEstudiante());
+            error.setMensaje("No hay un administrador conectado al WebSocket. Intente más tarde.");
+            return error;
+        }
+
         int maxIntentos = 3;
         int intento = 0;
         while (intento < maxIntentos) {
