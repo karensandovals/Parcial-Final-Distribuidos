@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RespuestaPazYSalvoDTODeportes {
     private String codigoEstudiante;
+    private String nombresEstudiante;
     private Date fechaPrestamo;
     private Date fechaDevolucionEstimada;
     private Date fechaDevolucionReal;

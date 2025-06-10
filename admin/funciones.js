@@ -55,7 +55,7 @@ function mostrarDeudas(data) {
     } else if (areaSeleccionada === 'laboratorio') {
       p.textContent = `Estudiante ${item.codigoEstudiante} debe devolver: ${item.equipoPrestado}.`;
     } else if (areaSeleccionada === 'deportes') {
-      p.textContent = `Estudiante ${item.codigoEstudiante} debe el implemento: ${item.nombreElemento}.`;
+      p.textContent = `Estudiante ${item.codigoEstudiante} debe el implemento: ${item.implementoDeportivoPrestado}.`;
     }
     contenedor.appendChild(p);
   });

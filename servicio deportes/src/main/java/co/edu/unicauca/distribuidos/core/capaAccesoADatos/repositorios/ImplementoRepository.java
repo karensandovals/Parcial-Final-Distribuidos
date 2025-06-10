@@ -23,12 +23,12 @@ public class ImplementoRepository {
 
         // Juan Pérez
         List<ImplementoDeportivo> implementosJuan = new ArrayList<>();
-        implementosJuan.add(new ImplementoDeportivo("202012345", "Balón", "2024-08-01", "2024-08-10", null));
-        implementosJuan.add(new ImplementoDeportivo("202012345", "Raqueta", "2024-08-05", "2024-08-15", null));
+        implementosJuan.add(new ImplementoDeportivo("202012345", "Andrés Sánchez","Balón", "2024-08-01", "2024-08-10", null));
+        implementosJuan.add(new ImplementoDeportivo("202012345","Andrés Sánchez", "Raqueta", "2024-08-05", "2024-08-15", null));
 
         // Ana Gómez
         List<ImplementoDeportivo> implementosAna = new ArrayList<>();
-        implementosAna.add(new ImplementoDeportivo("202087654", "Uniforme", "2025-01-12", "2025-01-20", null));
+        implementosAna.add(new ImplementoDeportivo("202087654", "Ana Gómez", "Uniforme", "2025-01-12", "2025-01-20", null));
 
         this.implementosPorEstudiante.put("202012345", implementosJuan);
         this.implementosPorEstudiante.put("202087654", implementosAna);

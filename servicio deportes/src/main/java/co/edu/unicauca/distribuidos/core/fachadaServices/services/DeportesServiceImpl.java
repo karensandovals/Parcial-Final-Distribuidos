@@ -41,6 +41,7 @@ public List<RespuestaPazYSalvoDTODeportes> crearImplemento(PeticionImplementoDTO
     for (ImplementoDeportivo imp : pendientes) {
         respuesta.add(new RespuestaPazYSalvoDTODeportes(
             imp.getCodigoEstudiante(),
+            imp.getNombresEstudiante(),
             parseFecha(imp.getFechaPrestamo()),
             parseFecha(imp.getFechaDevolucionEstimada()),
             parseFecha(imp.getFechaDevolucionReal()),

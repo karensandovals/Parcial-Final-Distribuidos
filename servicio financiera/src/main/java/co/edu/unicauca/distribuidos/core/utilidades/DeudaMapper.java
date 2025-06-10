@@ -12,6 +12,7 @@ public class DeudaMapper {
     public static RespuestaDeudaDTO fromDeudaToDTO(Deuda deuda) {
         return new RespuestaDeudaDTO(
                 deuda.getCodigoEstudiante(),
+                deuda.getNombresEstudiante(),
                 deuda.getMonto(),
                 deuda.getMotivo(),
                 localDateToDate(deuda.getFechaGeneracion()),

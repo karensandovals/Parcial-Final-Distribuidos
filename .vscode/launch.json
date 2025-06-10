@@ -8,6 +8,37 @@
             "mainClass": "co.edu.unicauca.distribuidos.core.ProyectoApiRestClienteApplication",
             "projectName": "co.edu.unicauca.distribuidos-proyecto_api_rest_cliente",
             "args": "",
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-ProyectoApiRestClienteApplication<co.edu.unicauca.distribuidos-servicio1>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "co.edu.unicauca.distribuidos.core.ProyectoApiRestClienteApplication",
+            "projectName": "co.edu.unicauca.distribuidos-servicio1",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-ProyectoApiRestClienteApplication<servicio_financiera>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "co.edu.unicauca.distribuidos.core.ProyectoApiRestClienteApplication",
+            "projectName": "servicio_financiera",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-ProyectoApiRestClienteApplication<servicio_orquestador>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "co.edu.unicauca.distribuidos.core.ProyectoApiRestClienteApplication",
+            "projectName": "servicio_orquestador",
+            "args": "",
             "envFile": "${workspaceFolder}/.env"
         }
     ]

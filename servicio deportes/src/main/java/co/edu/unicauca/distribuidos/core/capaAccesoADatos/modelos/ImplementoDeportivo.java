@@ -7,6 +7,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class ImplementoDeportivo {
     private String codigoEstudiante;
+    private String nombresEstudiante;
     private String nombreImplemento;
     private String fechaPrestamo;
     private String fechaDevolucionEstimada;

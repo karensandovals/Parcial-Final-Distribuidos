@@ -10,6 +10,7 @@ import lombok.Data;
 @NoArgsConstructor  
 public class Deuda {
     private String codigoEstudiante;
+    private String nombresEstudiante;
     private double monto;
     private String motivo;
     private LocalDate fechaGeneracion;
