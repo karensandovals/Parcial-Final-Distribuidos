@@ -61,7 +61,7 @@ public class GenerarPazYSalvoImpl implements GenerarPazYSalvoInt {
                 respuesta.setCodigoEstudiante(peticion.getCodigoEstudiante());
 
                 // Notificar a administradores
-                notificarAdministradores(peticion.getCodigoEstudiante(), peticion.getNombresEstudiante());
+                notificarAdministradores(peticion.getCodigoEstudiante());
 
                 // 1. Laboratorio
                 List<RespuestaPazYSalvoDTOLaboratorio> laboratorio = null;
@@ -186,7 +186,7 @@ public class GenerarPazYSalvoImpl implements GenerarPazYSalvoInt {
                     respuesta.setMensaje("Consulta asíncrona exitosa.");
 
                     // Notificar a administradores
-                    notificarAdministradores(peticion.getCodigoEstudiante(), peticion.getNombresEstudiante());
+                    notificarAdministradores(peticion.getCodigoEstudiante());
 
                     // Notificar al estudiante
                     notificarEstudiante(peticion.getCodigoEstudiante(), respuesta);
@@ -238,10 +238,10 @@ public class GenerarPazYSalvoImpl implements GenerarPazYSalvoInt {
         messagingTemplate.convertAndSend(destino, mensaje);
     }
 
-    private void notificarAdministradores(String codigoEstudiante, String nombres) {
+    private void notificarAdministradores(String codigoEstudiante) {
         String mensaje = String.format(
-                "El estudiante con código %s y nombres %s ha realizado una nueva solicitud de paz y salvo",
-                codigoEstudiante, nombres);
+                "El estudiante con código %s ha realizado una nueva solicitud de paz y salvo",
+                codigoEstudiante);
         messagingTemplate.convertAndSend("/notificacion/general/laboratorio", mensaje);
         messagingTemplate.convertAndSend("/notificacion/general/financiera", mensaje);
         messagingTemplate.convertAndSend("/notificacion/general/deportes", mensaje);
