@@ -21,7 +21,7 @@ function conectarWebSocket(codigoEstudiante, callback) {
       mostrarResultado(JSON.parse(mensaje.body));
     });
 
-    if(callback) callback();
+    if (callback) callback();
   });
 }
 
@@ -57,6 +57,20 @@ function consultar(esAsincrono = false) {
 
 
 function hacerPeticion(codigo, esAsincrono = false) {
+  const estado = document.getElementById("estado");
+  const botones = document.querySelectorAll("button");
+
+  // Deshabilitar botones durante la petición
+  botones.forEach(boton => boton.disabled = true);
+
+  // Mostrar estado inicial
+  estado.style.display = "block";
+  estado.className = "alert alert-info mt-3";
+  estado.innerHTML = `
+    <div class="spinner-border spinner-border-sm" role="status"></div>
+    <span class="ms-2">Iniciando consulta ${esAsincrono ? 'asíncrona' : 'síncrona'}...</span>
+  `;
+
   const url = esAsincrono
     ? "http://localhost:5004/api/orquestadorAsincrono"
     : "http://localhost:5004/api/orquestadorSincrono";
@@ -67,18 +81,46 @@ function hacerPeticion(codigo, esAsincrono = false) {
     body: JSON.stringify({ codigoEstudiante: codigo })
   })
     .then(response => {
+      if (!response.ok) {
+        // Si es error HTTP (4xx, 5xx)
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
+      }
       return esAsincrono ? response.text() : response.json();
     })
     .then(data => {
       if (!esAsincrono) {
-        mostrarResultado(data); // solo mostramos de inmediato si es síncrono
+        // Manejo respuesta síncrona
+        if (data.mensaje && data.mensaje.includes("Error")) {
+          estado.className = "alert alert-danger mt-3";
+          estado.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${data.mensaje}`;
+        } else {
+          estado.className = "alert alert-success mt-3";
+          estado.innerHTML = `<i class="fas fa-check-circle"></i> Consulta completada`;
+          setTimeout(() => estado.style.display = "none", 2000);
+          mostrarResultado(data);
+        }
       } else {
+        // Manejo respuesta asíncrona
+        estado.className = "alert alert-warning mt-3";
+        estado.innerHTML = `
+          <div class="spinner-border spinner-border-sm" role="status"></div>
+          <span class="ms-2">Consulta asíncrona en progreso. Esperando notificación...</span>
+        `;
         console.log("Petición asíncrona enviada, esperando respuesta por WebSocket...");
       }
     })
     .catch(error => {
       console.error("Error al enviar petición:", error);
-      mostrarError("Error al enviar la petición.");
+      estado.className = "alert alert-danger mt-3";
+      estado.innerHTML = `
+        <i class="fas fa-exclamation-circle"></i> Error en la consulta: ${error.message}
+        ${!esAsincrono ? '<div class="mt-2">Intente nuevamente.</div>' : ''}
+      `;
+      mostrarError(`Error al procesar la petición: ${error.message}`);
+    })
+    .finally(() => {
+      // Rehabilitar botones al finalizar
+      botones.forEach(boton => boton.disabled = false);
     });
 }
 
@@ -87,6 +129,17 @@ function hacerPeticion(codigo, esAsincrono = false) {
 function mostrarResultado(respuesta) {
   const contenedor = document.getElementById("resultado");
   contenedor.innerHTML = "";
+
+  if (respuesta.errores && respuesta.errores.length > 0) {
+    contenedor.innerHTML = `
+    <div class="alert alert-danger" role="alert">
+      <strong>Errores detectados:</strong>
+      <ul>${respuesta.errores.map(e => `<li>${e}</li>`).join("")}</ul>
+    </div>
+  `;
+    return;
+  }
+
 
   // Mostrar datos generales
   contenedor.innerHTML += `
@@ -173,4 +226,19 @@ function mostrarResultado(respuesta) {
 function mostrarError(mensaje) {
   const contenedor = document.getElementById("resultado");
   contenedor.innerHTML = `<p style="color:red;"><strong>${mensaje}</strong></p>`;
+}
+
+function mostrarEstado(mensaje, tipo = 'info') {
+  const estado = document.getElementById("estado");
+  const estadoTexto = document.getElementById("estado-texto");
+
+  estado.style.display = "block";
+  estadoTexto.textContent = mensaje;
+
+  // Cambiar clase según tipo
+  estado.className = `alert alert-${tipo} mt-3`;
+}
+
+function ocultarEstado() {
+  document.getElementById("estado").style.display = "none";
 }
